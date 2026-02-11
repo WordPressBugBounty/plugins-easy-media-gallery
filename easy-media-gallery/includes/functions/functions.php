@@ -148,6 +148,11 @@ function emg_cp_reset()
 
     check_ajax_referer( 'easymedia-lite-nonce', 'security' );
 
+    if ( ! current_user_can('manage_options') ) {
+        wp_send_json_error( 'Unauthorized: admin only', 403 );
+        wp_die();
+    }
+
     if ( ! isset( $_POST['cmd'] ) ) {
         echo '0';
         wp_die();
@@ -450,14 +455,27 @@ function easymedia_sc_handler( $scdata, $scl )
 /*-------------------------------------------------------------------------------*/
 /*  Get attachment image id
 /*-------------------------------------------------------------------------------*/
-function emg_get_attachment_id_from_src( $link )
-{
+function emg_get_attachment_id_from_src( $url ) {
+    $id = attachment_url_to_postid( $url );
+    if ( $id ) {
+        return $id;
+    }
 
+    // fallback manual
     global $wpdb;
-    $link = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $link );
 
-    return $wpdb->get_var( "SELECT ID FROM {$wpdb->posts} WHERE guid='$link'" );
+    $path = wp_parse_url( $url, PHP_URL_PATH );
+    $path = preg_replace('/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $path);
 
+    return $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT post_id FROM {$wpdb->postmeta}
+             WHERE meta_key = '_wp_attached_file'
+             AND %s LIKE CONCAT('%%', meta_value)
+             LIMIT 1",
+            $path
+        )
+    );
 }
 
 /*-------------------------------------------------------------------------------*/

@@ -348,7 +348,7 @@ $.fn.emgReOrder = function(array) {
 
 jQuery(document).ready(function($) {
 	
-	var emgListPl = ['page-builder-wp', 'contact-form-lite', 'feed-instagram-lite', 'image-slider-widget', 'image-carousel','icon', 'easy-notify-lite', 'gallery-lightbox-slider', 'easy-media-gallery'];
+	var emgListPl = ['luvre', 'page-builder-wp', 'contact-form-lite', 'feed-instagram-lite', 'image-slider-widget', 'image-carousel','icon', 'easy-notify-lite', 'gallery-lightbox-slider', 'easy-media-gallery'];
 	
 	$('#the-list').emgReOrder(emgListPl);
 	

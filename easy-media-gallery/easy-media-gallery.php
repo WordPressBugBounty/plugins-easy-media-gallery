@@ -3,7 +3,7 @@
 Plugin Name: Easy Media Gallery
 Plugin URI: https://ghozylab.com/plugins/
 Description: Easy Media Gallery (Lite) - Displaying your gallery, video (MP4, Youtube, Vimeo) and audio mp3 in elegant and fancy lightbox with very easy. Allows you to customize all media to get it looking exactly what you want. <a href="https://ghozy.link/q65dp" target="_blank"><strong> Upgrade to Pro Version Now</strong></a> and get a tons of awesome features.
-Author: Gallery Team - GhozyLab
+Author: PT. GHOZY LAB LLC
 Text Domain: easy-media-gallery
 Domain Path: /languages
 Version: 1.3.170
@@ -419,10 +419,15 @@ function easmedia_custom_columns_easymedia( $easymedia_columns, $post_id )
 
                     if ( isset( $thumbmedia ) && $thumbmedia != '' ) {
                         $globalimgsize = wp_get_attachment_image_src( emg_get_attachment_id_from_src( $thumbmedia ), 'full' );
-                        $timthumbimg   = easymedia_resizer( $thumbmedia, $globalimgsize[1], $globalimgsize[2], 70, 70, true );
+                        if ( ! $globalimgsize) {
+                            $timthumbimg   = plugins_url( 'includes/images/no-image-available.jpg', __FILE__ );
+                        }
+                        else {
+                            $timthumbimg   = easymedia_resizer( $thumbmedia, $globalimgsize[1], $globalimgsize[2], 70, 70, true );
+                        }
                         echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.$timthumbimg.'"></img>';
                     } else {
-                        echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.plugins_url( 'includes/images/no_images.png', __FILE__ ).'"></img>';
+                        echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.plugins_url( 'includes/images/no-image-available.jpg', __FILE__ ).'"></img>';
                     }
 
                     break;

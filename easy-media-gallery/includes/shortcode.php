@@ -111,11 +111,18 @@ echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">
 				if ( basename( $image ) == 'no-image-available.jpg' ) {
 					$medialink = $image;
 				}
-					else {
-				$attid = wp_get_attachment_image_src( emg_get_attachment_id_from_src( $image ), 'full' );
-				$medialink = easymedia_imgresize( $attid[0], $deff_img_limit, $isresize1, $attid[1], $attid[2] );
-				$medialink = explode(",", $medialink); $medialink = $medialink[0];
+				else {
+					$attid = wp_get_attachment_image_src( emg_get_attachment_id_from_src( $image ), 'full' );
+
+					if ( ! $attid ) {
+						$medialink = plugins_url( 'images/no-image-available.jpg' , __FILE__ ) ;
 					}
+					else {
+						$medialink = easymedia_imgresize( $attid[0], $deff_img_limit, $isresize1, $attid[1], $attid[2] );
+						$medialink = explode(",", $medialink);
+						$medialink = $medialink[0];
+					}
+				}
 				$therell = "easymedia";
 
 	    	break;
@@ -189,10 +196,14 @@ echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">
 			}
 			
 		} else {
-			
 			$globalsize = wp_get_attachment_image_src( emg_get_attachment_id_from_src( $image ), 'full' );
-			$image = easymedia_resizer( $image, $globalsize[1], $globalsize[2], $imwidth, $imheight, true );
-			
+
+			if ( ! $globalsize ) {
+				$image = plugins_url( 'images/no-image-available.jpg' , __FILE__ ) ;
+			}
+			else {
+				$image = easymedia_resizer( $image, $globalsize[1], $globalsize[2], $imwidth, $imheight, true );
+			}			
 		}
 			
 		if ( $mediatype == 'Multiple Images (Slider)' ){

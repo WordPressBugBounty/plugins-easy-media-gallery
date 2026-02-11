@@ -1,12 +1,13 @@
 === Gallery – Photo Albums Plugin ===
 Contributors: GhozyLab
 Donate link: https://ghozy.link/rs3bq
-Tags: gallery, photo gallery, image gallery, free gallery, slider
+Tags: gallery, photo gallery, image gallery, slider, image slider
 Requires at least: 3.4
-Tested up to: 6.6
+Tested up to: 6.9
 Stable tag: 1.3.170
+Requires PHP: 7.2
 License: GPLv3 or later
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Image Gallery – Photo Albums Plugin is the easiest tool to create image gallery, photo albums, portfolio and also photo slider.
 
@@ -132,6 +133,8 @@ Take your gallery to the next level with [Gallery Pro Version](https://ghozylab.
 
 The following are other recommended plugins by the author:
 
+* [Page Builder](https://wordpress.org/plugins/page-builder-wp/ "BestPage Builder Plugin") - Powerful page builder revolutionizing website creation.
+* [Media Library Folders](https://wordpress.org/plugins/luvre/ "Best Media Library Folder Plugin") - User-friendly WordPress plugin that helps you manage your media library images by organizing them into folders. 
 * [Contact Form Plugin](https://wordpress.org/plugins/contact-form-lite/ "Best Contact Form Plugin") - The Best Contact Form Plugin to create awesome Contact Form just in minutes.
 * [Slider Plugin](https://wordpress.org/plugins/image-slider-widget/ "Best Image Slider Plugin") - Easy Image Slider Widget - Displaying your image as slider in widget/sidebar area with very easy. Allows you to customize it to looking exactly what you want.
 * [Instagram Feed Plugin](https://wordpress.org/plugins/feed-instagram-lite/ "Instagram") - Display your Instagram media as masonry gallery in WordPress site with very easily.
@@ -300,8 +303,6 @@ But seriously, I just want to drink coffee for free, so help a developer out. Yo
 8. HTML5 video player
 9. Google Maps and Google Street View
 
-== Upgrade Notice ==
-
 = 1.3.170 =
 
 IMPORTANT! SECURITY BUGS FIX, PLEASE UPDATE NOW!
@@ -311,6 +312,12 @@ IMPORTANT! SECURITY BUGS FIX, PLEASE UPDATE NOW!
 = 1.3.170 =
 * Update : WordPress 6.3 compatibility
 * Fixed : Many other PHP and CSS clean and optimization
+
+= 1.3.169 =
+
+IMPORTANT! SECURITY BUGS FIX, PLEASE UPDATE NOW!
+
+== Changelog ==
 
 = 1.3.169 =
 * Update : WordPress 5.9 compatibility
