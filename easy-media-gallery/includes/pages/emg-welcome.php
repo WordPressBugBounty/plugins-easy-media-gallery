@@ -388,7 +388,7 @@ class EMG_Welcome {
 			text-align: center;
 			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 			margin: 0 -5px;
-			background: url('<?php echo $badge_url; ?>') no-repeat;
+			background: url('<?php echo esc_url( $badge_url ); ?>') no-repeat;
 		}
 
 		.about-wrap .emg-badge {
@@ -533,7 +533,7 @@ class EMG_Welcome {
 		
 		.emg-dollar {
 		
-		background: url('<?php echo EASYMEDG_PLUGIN_URL . 'includes/images/aff-dollar.png'; ?>') no-repeat;
+		background: url('<?php echo esc_url( EASYMEDG_PLUGIN_URL . 'includes/images/aff-dollar.png' ); ?>') no-repeat;
 		color: #2984E0;
 		background-position-x: 113px;	
 		}
@@ -549,7 +549,7 @@ class EMG_Welcome {
 		
 		
 		.button_loading {
-    		background: url('<?php echo EASYMEDG_PLUGIN_URL . 'includes/images/gen-loader.gif'; ?>') no-repeat 50% 50%;
+    		background: url('<?php echo esc_url( EASYMEDG_PLUGIN_URL . 'includes/images/gen-loader.gif' ); ?>') no-repeat 50% 50%;
     		/* apply other styles to "loading" buttons */
 			display:inline-block;
 			position:relative;
@@ -799,7 +799,7 @@ class EMG_Welcome {
 			text-align: center;
 			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 			margin: 0 -5px;
-			background: url('<?php echo $badge_url; ?>') no-repeat;
+			background: url('<?php echo esc_url( $badge_url ); ?>') no-repeat;
 		}
 
 		.about-wrap .emg-badge {
@@ -935,7 +935,7 @@ class EMG_Welcome {
 		
 		.emg-dollar {
 		
-		background: url('<?php echo EASYMEDG_PLUGIN_URL . 'includes/images/aff-dollar.png'; ?>') no-repeat;
+		background: url('<?php echo esc_url( EASYMEDG_PLUGIN_URL . 'includes/images/aff-dollar.png' ); ?>') no-repeat;
 		color: #2984E0;
 			
 		}
@@ -951,7 +951,7 @@ class EMG_Welcome {
 		
 		
 		.button_loading {
-    		background: url('<?php echo EASYMEDG_PLUGIN_URL . 'includes/images/gen-loader.gif'; ?>') no-repeat 50% 50%;
+    		background: url('<?php echo esc_url( EASYMEDG_PLUGIN_URL . 'includes/images/gen-loader.gif' ); ?>') no-repeat 50% 50%;
     		/* apply other styles to "loading" buttons */
 			display:inline-block;
 			position:relative;
@@ -992,34 +992,30 @@ class EMG_Welcome {
         
 		<h2 class="nav-tab-wrapper">
 			<a class="nav-tab <?php echo $selected == 'emg-whats-new' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-whats-new' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php _e( 'What\'s New', 'easy-media-gallery' ); ?>
+				<?php esc_html_e( 'What\'s New', 'easy-media-gallery' ); ?>
 			</a>
 			<a class="nav-tab <?php echo $selected == 'emg-getting-started' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-getting-started' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php _e( 'Getting Started', 'easy-media-gallery' ); ?>
+				<?php esc_html_e( 'Getting Started', 'easy-media-gallery' ); ?>
 			</a>
             
-			<!--<a class="nav-tab <?php //echo $selected == 'emg-addons' ? 'nav-tab-active' : ''; ?>" href="<?php //echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-addons' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php //_e( 'Addons', 'easy-media-gallery' ); ?>
-			</a>-->
-            
 			<a class="nav-tab <?php echo $selected == 'emg-free-themes' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-free-themes' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php _e( 'Free Themes', 'easy-media-gallery' ); ?>
+				<?php esc_html_e( 'Free Themes', 'easy-media-gallery' ); ?>
 			</a>
             
 			<a class="nav-tab <?php echo $selected == 'emg-free-plugins' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-free-plugins' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php _e( 'Free Plugins', 'easy-media-gallery' ); ?>
+				<?php esc_html_e( 'Free Plugins', 'easy-media-gallery' ); ?>
 			</a>
             
 			<a class="nav-tab <?php echo $selected == 'emg-premium-plugins' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-premium-plugins' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php _e( 'Premium Plugins', 'easy-media-gallery' ); ?>
+				<?php esc_html_e( 'Premium Plugins', 'easy-media-gallery' ); ?>
 			</a>
             
 			<a class="nav-tab <?php echo $selected == 'emg-demo' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-demo' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php _e( 'Demo', 'easy-media-gallery' ); ?>
+				<?php esc_html_e( 'Demo', 'easy-media-gallery' ); ?>
 			</a>
             
 			<a class="nav-tab <?php echo $selected == 'emg-earn-xtra-money' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-earn-xtra-money' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>">
-				<?php _e( '<span class="emg-dollar">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Extra Money</span>', 'easy-media-gallery' ); ?>
+				<span class="emg-dollar">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php esc_html_e( 'Extra Money', 'easy-media-gallery' ); ?></span>
 			</a>
             
 		</h2>
@@ -1039,63 +1035,70 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
             
             <?php emg_lite_get_news();  ?>
 
 			<div class="emg-container-cnt">
-				<h3 class="customh3"><?php _e( 'New Welcome Page', 'easy-media-gallery' );?></h3>
+				<h3 class="customh3"><?php esc_html_e( 'New Welcome Page', 'easy-media-gallery' ); ?></h3>
 
 				<div class="feature-section">
 
-					<p><?php printf( __( 'Version %s introduces a comprehensive welcome page interface. The easy way to get important informations about this product and other related plugins.', 'easy-media-gallery' ), EASYMEDIA_VERSION );?></p>
+					<?php /* translators: %s: version number */ ?>
+					<p><?php printf( esc_html__( 'Version %s introduces a comprehensive welcome page interface. The easy way to get important informations about this product and other related plugins.', 'easy-media-gallery' ), esc_html( EASYMEDIA_VERSION ) ); ?></p>
                     
-					<p><?php _e( 'In this page, you will find four important Tabs named What\'s New, Getting Started, Addons, Free Themes, Free Plugins, Premium Plugins and Demo.', 'easy-media-gallery' );?></p>
+					<p><?php esc_html_e( 'In this page, you will find four important Tabs named What\'s New, Getting Started, Addons, Free Themes, Free Plugins, Premium Plugins and Demo.', 'easy-media-gallery' ); ?></p>
 
 				</div>
 			</div>
 
 			<div class="emg-container-cnt">
-				<h3><?php _e( 'Additional Updates', 'easy-media-gallery' );?></h3>
+				<h3><?php esc_html_e( 'Additional Updates', 'easy-media-gallery' ); ?></h3>
 
 				<div class="feature-section">
                 
 					<div>
 
-						<h4><?php _e( 'Language Packs Update', 'easy-media-gallery' );?></h4>
-						<p><?php _e( 'We\'ve improved Language Packs to compatible with <a href="https://translate.wordpress.org/projects/wp-plugins/easy-media-gallery" target="_blank">translate.wordpress.org</a> translation system', 'easy-media-gallery' );?></p>
+						<h4><?php esc_html_e( 'Language Packs Update', 'easy-media-gallery' ); ?></h4>
+						<p><?php
+						/* translators: 1: opening <a> tag, 2: closing </a> tag */
+						echo wp_kses_post( sprintf( __( 'We\'ve improved Language Packs to compatible with %1$stranslate.wordpress.org%2$s translation system', 'easy-media-gallery' ), '<a href="https://translate.wordpress.org/projects/wp-plugins/easy-media-gallery" target="_blank">', '</a>' ) );
+						?></p>
 
 					</div>
                 
 					<div>
 
-						<h4><?php _e( 'CSS Clean and Optimization', 'easy-media-gallery' );?></h4>
-						<p><?php _e( 'We\'ve improved some css class to make your gallery for look fancy and better.', 'easy-media-gallery' );?></p>
+						<h4><?php esc_html_e( 'CSS Clean and Optimization', 'easy-media-gallery' ); ?></h4>
+						<p><?php esc_html_e( 'We\'ve improved some css class to make your gallery for look fancy and better.', 'easy-media-gallery' ); ?></p>
 
 					</div>
 
 					<div>
 
-						<h4><?php _e( 'Disable Notifications', 'easy-media-gallery' );?></h4>
-						<p><?php _e( 'In this version you will no longer see some annoying notifications in top of gallery editor page. Thanks for who suggested it.' ,'easy-media-gallery' );?></p>
+						<h4><?php esc_html_e( 'Disable Notifications', 'easy-media-gallery' ); ?></h4>
+						<p><?php esc_html_e( 'In this version you will no longer see some annoying notifications in top of gallery editor page. Thanks for who suggested it.', 'easy-media-gallery' ); ?></p>
                         
 					</div>
 
 					<div class="last-feature">
 
-						<h4><?php _e( 'Improved Some Core Function', 'easy-media-gallery' );?></h4>
-						<p><?php _e( ' Some functions has been improved to be more robust and fast so you can generate your gallery/albums only in seconds.', 'easy-media-gallery' );?></p>
+						<h4><?php esc_html_e( 'Improved Some Core Function', 'easy-media-gallery' ); ?></h4>
+						<p><?php esc_html_e( ' Some functions has been improved to be more robust and fast so you can generate your gallery/albums only in seconds.', 'easy-media-gallery' ); ?></p>
 
 					</div>
 
 				</div>
 			</div>
 
-			<div class="return-to-dashboard">&middot;<a href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-changelog' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>"><?php _e( 'View the Full Changelog', 'easy-media-gallery' ); ?></a>
+			<div class="return-to-dashboard">&middot;<a href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'emg-changelog' ), 'edit.php?post_type=easymediagallery' ) ) ); ?>"><?php esc_html_e( 'View the Full Changelog', 'easy-media-gallery' ); ?></a>
 			</div>
 		</div>
 		<?php
@@ -1112,16 +1115,19 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage">
-			<h1><?php _e( EASYMEDIA_NAME. ' Changelog', 'easy-media-gallery' ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( '%s Changelog', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
 			<div class="emg-container-cnt">
-				<h3><?php _e( 'Full Changelog', 'easy-media-gallery' );?></h3>
+				<h3><?php esc_html_e( 'Full Changelog', 'easy-media-gallery' ); ?></h3>
 				<div style="margin-top:-20px;">
-					<?php echo $this->emg_parse_readme(); ?>
+					<?php echo wp_kses_post( $this->emg_parse_readme() ); ?>
 				</div>
 			</div>
 
@@ -1140,46 +1146,61 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
-			<p class="about-description"><?php _e( 'There are no complicated instructions for using Easy Media Gallery because this plugin designed to make all easy. Please watch the following video and we believe that you will easily to understand it just in minutes :', 'easy-media-gallery' ); ?></p>
+			<p class="about-description"><?php esc_html_e( 'There are no complicated instructions for using Easy Media Gallery because this plugin designed to make all easy. Please watch the following video and we believe that you will easily to understand it just in minutes :', 'easy-media-gallery' ); ?></p>
 
 			<div class="emg-container-cnt">
 				<div class="feature-section">
-                	<h3 style="font-style:italic;"><?php _e( 'How to Create Simple Photo Albums', 'easy-media-gallery' );?></h3>
+                	<h3 style="font-style:italic;"><?php esc_html_e( 'How to Create Simple Photo Albums', 'easy-media-gallery' ); ?></h3>
                 <div style="padding:3px; border: solid 1px rgb(198, 198, 198); max-width:853px;"><iframe width="853" height="480" src="https://www.youtube.com/embed/pjHvRoV2Bn8?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe></div><br />
-                	<h3 style="font-style:italic;"><?php _e( 'How to Create Simple Gallery', 'easy-media-gallery' );?></h3>
+                	<h3 style="font-style:italic;"><?php esc_html_e( 'How to Create Simple Gallery', 'easy-media-gallery' ); ?></h3>
                <div style="padding:1px; border: solid 1px rgb(198, 198, 198); max-width:853px;"><iframe width="853" height="480" src="https://www.youtube.com/embed/H1Z3fidyEbE?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe></div>
-                <h4><?php _e( 'Video Tutorials on Youtube Channel', 'easy-media-gallery' );?></h4>
-                You can learn more by watching the video from <a href="https://www.youtube.com/GhozyLab" target="_blank">Youtube Channel</a>
+                <h4><?php esc_html_e( 'Video Tutorials on Youtube Channel', 'easy-media-gallery' ); ?></h4>
+                <?php
+				/* translators: 1: opening <a> tag, 2: closing </a> tag */
+				echo wp_kses_post( sprintf( __( 'You can learn more by watching the video from %1$sYoutube Channel%2$s', 'easy-media-gallery' ), '<a href="https://www.youtube.com/GhozyLab" target="_blank">', '</a>' ) );
+				?>
 			</div>
             <hr />
             </div>
 
 			<div class="emg-container-cnt">
-				<h3><?php _e( 'Need Help?', 'easy-media-gallery' );?></h3>
+				<h3><?php esc_html_e( 'Need Help?', 'easy-media-gallery' ); ?></h3>
 
 				<div class="feature-section">
 
-					<h4><?php _e( 'Phenomenal Support','easy-media-gallery' );?></h4>
-					<p><?php _e( 'We do our best to provide the best support we can. If you encounter a problem or have a question, post a question in the <a href="https://wordpress.org/support/plugin/easy-media-gallery" target="_blank">support forums</a>.', 'easy-media-gallery' );?></p>
-					<h4><?php _e( 'Need Even Faster Support?', 'easy-media-gallery' );?></h4>
-					<p><?php _e( 'Just upgrade to <a target="_blank" href="https://ghozy.link/eqiz9">Pro version</a> and you will get Priority Support are there for customers that need faster and/or more in-depth assistance.', 'easy-media-gallery' );?></p>
+					<h4><?php esc_html_e( 'Phenomenal Support', 'easy-media-gallery' ); ?></h4>
+					<p><?php
+					/* translators: 1: opening <a> tag, 2: closing </a> tag */
+					echo wp_kses_post( sprintf( __( 'We do our best to provide the best support we can. If you encounter a problem or have a question, post a question in the %1$ssupport forums%2$s.', 'easy-media-gallery' ), '<a href="https://wordpress.org/support/plugin/easy-media-gallery" target="_blank">', '</a>' ) );
+					?></p>
+					<h4><?php esc_html_e( 'Need Even Faster Support?', 'easy-media-gallery' ); ?></h4>
+					<p><?php
+					/* translators: 1: opening <a> tag, 2: closing </a> tag */
+					echo wp_kses_post( sprintf( __( 'Just upgrade to %1$sPro version%2$s and you will get Priority Support are there for customers that need faster and/or more in-depth assistance.', 'easy-media-gallery' ), '<a target="_blank" href="https://ghozy.link/eqiz9">', '</a>' ) );
+					?></p>
 
 				</div>
 			</div>
 
 			<div class="emg-container-cnt">
-				<h3><?php _e( 'Stay Up to Date', 'easy-media-gallery' );?></h3>
+				<h3><?php esc_html_e( 'Stay Up to Date', 'easy-media-gallery' ); ?></h3>
 
 				<div class="feature-section">
 
-					<h4><?php _e( 'Get Notified of Addons Releases','easy-media-gallery' );?></h4>
-					<p><?php _e( 'New Addons that make '.EASYMEDIA_NAME.' even more powerful are released nearly every single week. Subscribe to the newsletter to stay up to date with our latest releases. <a target="_blank" href="https://eepurl.com/bq3RcP" target="_blank">Signup now</a> to ensure you do not miss a release!', 'easy-media-gallery' );?></p>
+					<h4><?php esc_html_e( 'Get Notified of Addons Releases', 'easy-media-gallery' ); ?></h4>
+					<p><?php
+					/* translators: 1: plugin name, 2: opening <a> tag, 3: closing </a> tag */
+					echo wp_kses_post( sprintf( __( 'New Addons that make %1$s even more powerful are released nearly every single week. Subscribe to the newsletter to stay up to date with our latest releases. %2$sSignup now%3$s to ensure you do not miss a release!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ), '<a target="_blank" href="https://eepurl.com/bq3RcP">', '</a>' ) );
+					?></p>
 
 				</div>
 			</div>
@@ -1201,16 +1222,19 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
 			<div class="emg-container-cnt">
 
 				<div class="feature-section">
-					<?php echo emg_free_plugin_page(); ?>
+					<?php emg_free_plugin_page(); ?>
 				</div>
 			</div>
 
@@ -1230,9 +1254,12 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage" id="ghozy-featured">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
@@ -1240,7 +1267,7 @@ class EMG_Welcome {
 			<p style="margin-bottom:50px;"class="about-description"></p>
 
 				<div class="feature-section">
-					<?php echo emg_premium_plugins(); ?>
+					<?php emg_premium_plugins(); ?>
 				</div>
 			</div>
 
@@ -1261,9 +1288,12 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage" id="ghozy-addons">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
@@ -1271,7 +1301,12 @@ class EMG_Welcome {
 			<p style="margin-bottom:50px;"class="about-description"></p>
 
 				<div class="feature-section">
-					<?php echo emg_lite_get_addons_feed(); ?>
+					<?php
+					$addons_feed = emg_lite_get_addons_feed();
+					if ( ! empty( $addons_feed ) && is_string( $addons_feed ) ) {
+						emg_render_remote_feed( $addons_feed );
+					}
+					?>
 				</div>
 			</div>
 
@@ -1291,15 +1326,22 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emg-free-theme-page emgwpage" id="ghozy-free-themes">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your slider more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your slider more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
 			<div class="emg-container-cnt">
 				<div class="feature-section">
-					<?php if ( current_user_can( 'install_themes' ) ) echo emg_lite_free_themes(); ?>
+					<?php
+					if ( current_user_can( 'install_themes' ) ) {
+						emg_lite_free_themes();
+					}
+					?>
 				</div>
 			</div>
 
@@ -1319,9 +1361,12 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage" id="ghozy-featured">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
@@ -1329,7 +1374,7 @@ class EMG_Welcome {
 			<p style="margin-bottom:25px;"class="about-description"></p>
 
 				<div class="feature-section">
-					<?php echo emg_earn_xtra_money(); ?>
+					<?php emg_earn_xtra_money(); ?>
 				</div>
 			</div>
 
@@ -1350,9 +1395,12 @@ class EMG_Welcome {
 		list( $display_version ) = explode( '-', EASYMEDIA_VERSION );
 		?>
 		<div class="wrap about-wrap emgwpage" id="ghozy-demo">
-			<h1><?php printf( __( 'Welcome to '.EASYMEDIA_NAME.'', 'easy-media-gallery' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'Thank you for installing '.EASYMEDIA_NAME.'. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), $display_version ); ?></div>
-			<div class="emg-badge"><?php printf( __( 'Version %s', 'easy-media-gallery' ), $display_version ); ?></div>
+			<?php /* translators: %s: plugin name */ ?>
+			<h1><?php printf( esc_html__( 'Welcome to %s', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></h1>
+			<?php /* translators: %s: plugin name */ ?>
+			<div class="about-text"><?php printf( esc_html__( 'Thank you for installing %s. This plugin is ready to make your gallery more fancy and better!', 'easy-media-gallery' ), esc_html( EASYMEDIA_NAME ) ); ?></div>
+			<?php /* translators: %s: version number */ ?>
+			<div class="emg-badge"><?php printf( esc_html__( 'Version %s', 'easy-media-gallery' ), esc_html( $display_version ) ); ?></div>
 
 			<?php $this->emg_tabs(); ?>
 
@@ -1361,11 +1409,11 @@ class EMG_Welcome {
 
 				<div class="feature-section">
                 
-        <h3><?php _e('DEMO ( Video )', 'easy-media-gallery'); ?></h3>
-        <p><?php _e('This plugin comes with instructional training videos that walk you through every aspect of setting up your new media gallery. We recommend to following these videos to create new media. This user manual is only intended to be a reference guide.', 'easy-media-gallery'); ?></p>
+        <h3><?php esc_html_e( 'DEMO ( Video )', 'easy-media-gallery' ); ?></h3>
+        <p><?php esc_html_e( 'This plugin comes with instructional training videos that walk you through every aspect of setting up your new media gallery. We recommend to following these videos to create new media. This user manual is only intended to be a reference guide.', 'easy-media-gallery' ); ?></p>
                 
                 
-					<?php echo easmedia_demo_page(); ?>
+					<?php easmedia_demo_page(); ?>
 				</div>
 			</div>
 
@@ -1383,25 +1431,53 @@ class EMG_Welcome {
 	 * @return string $readme HTML formatted readme file
 	 */
 	public function emg_parse_readme() {
-		$file = file_exists( EMG_DIR . 'readme.txt' ) ? EMG_DIR . 'readme.txt' : null;
+		$file = ( defined( 'EMG_DIR' ) && file_exists( EMG_DIR . 'readme.txt' ) ) ? EMG_DIR . 'readme.txt' : null;
 
 		if ( ! $file ) {
-			$readme = '<p>' . __( 'No valid changelog was found.', 'easy-media-gallery' ) . '</p>';
-		} else {
-			$readme = file_get_contents( $file );
-			$readme = nl2br( esc_html( $readme ) );
-			$readme = explode( '== Changelog ==', $readme );
-			$readme = end( $readme );
-
-			$readme = preg_replace( '/`(.*?)`/', '<code>\\1</code>', $readme );
-			$readme = preg_replace( '/[\040]\*\*(.*?)\*\*/', ' <strong>\\1</strong>', $readme );
-			$readme = preg_replace( '/[\040]\*(.*?)\*/', ' <em>\\1</em>', $readme );
-			$readme = preg_replace( '/= (.*?) =/', '<h4 class="each-version">Version: \\1</h4>', $readme );
-			$readme = preg_replace( '/\[(.*?)\]\((.*?)\)/', '<a href="\\2">\\1</a>', $readme );
-			$readme = str_replace("*","<span class='dashicons dashicons-arrow-".( is_rtl() ? 'left' : 'right' )."'></span>", $readme );
+			return '<p>' . esc_html__( 'No valid changelog was found.', 'easy-media-gallery' ) . '</p>';
 		}
 
-		return $readme;
+		$readme = file_get_contents( $file );
+		if ( false === $readme || '' === trim( $readme ) ) {
+			return '<p>' . esc_html__( 'No valid changelog was found.', 'easy-media-gallery' ) . '</p>';
+		}
+
+		$readme = nl2br( esc_html( $readme ) );
+		$parts  = explode( '== Changelog ==', $readme );
+		if ( count( $parts ) > 1 ) {
+			$readme = end( $parts );
+		}
+
+		$readme = (string) $readme;
+
+		$r = preg_replace( '/`(.*?)`/', '<code>$1</code>', $readme );
+		if ( null !== $r ) {
+			$readme = $r;
+		}
+
+		$r = preg_replace( '/[\040]\*\*(.*?)\*\*/', ' <strong>$1</strong>', $readme );
+		if ( null !== $r ) {
+			$readme = $r;
+		}
+
+		$r = preg_replace( '/[\040]\*(.*?)\*/', ' <em>$1</em>', $readme );
+		if ( null !== $r ) {
+			$readme = $r;
+		}
+
+		$r = preg_replace( '/= (.*?) =/', '<h4 class="each-version">' . esc_html__( 'Version: ', 'easy-media-gallery' ) . '$1</h4>', $readme );
+		if ( null !== $r ) {
+			$readme = $r;
+		}
+
+		$r = preg_replace( '/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $readme );
+		if ( null !== $r ) {
+			$readme = $r;
+		}
+
+		$readme = str_replace( '*', '<span class="dashicons dashicons-arrow-' . ( is_rtl() ? 'left' : 'right' ) . '"></span>', $readme );
+
+		return (string) $readme;
 	}
 
 	/**

@@ -4,6 +4,9 @@ jQuery(document).ready(function($) {
     easymediaList.sortable({
         update: function(event, ui) {
             
+            var nonceValue = (typeof easymedia_sort_vars !== 'undefined' && easymedia_sort_vars.nonce) ? easymedia_sort_vars.nonce : '';
+            var errorText  = (typeof easymedia_sort_vars !== 'undefined' && easymedia_sort_vars.error_msg) ? easymedia_sort_vars.error_msg : 'There was an error saving the update.';
+
             opts = {
                 url: ajaxurl,
                 type: 'POST',
@@ -12,13 +15,14 @@ jQuery(document).ready(function($) {
                 dataType: 'json',
                 data:{
                     action: 'easymedia_sort',
+                    security: nonceValue,
                     order: easymediaList.sortable('toArray').toString() 
                 },
                 success: function(response) {
                     return;
                 },
                 error: function(xhr,textStatus,e) {
-                    alert('There was an error saving the update.');
+                    alert(errorText);
                     return;
                 }
             };

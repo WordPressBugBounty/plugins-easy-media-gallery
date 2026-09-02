@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 //error_reporting(0);ini_set('display_errors', 0);
 /*------------------------------------------------------------------------------------*/
 /*  Plugin Control Panel ( Thanks & Credit to Nettuts A.K.A http://net.tutsplus.com ) 
@@ -108,13 +112,80 @@ if ( is_admin() && ( isset( $_GET['page'] ) == 'emg_settings' ) && $_GET['page']
 	wp_enqueue_script( 'easymedia-jquery-easing' );
 	wp_enqueue_script( 'colorpicker-eye' );
 	wp_enqueue_script( 'colorpicker-utils' );
-	wp_enqueue_script( 'easymedia-cpscript', plugins_url( 'functions/funcscript.js' , __FILE__ ) );
+	wp_enqueue_script( 'easymedia-cpscript', plugins_url( 'functions/funcscript.js' , __FILE__ ), array( 'jquery' ), ( defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : EASYMEDIA_VERSION . '.3' ) );
 }
 
 
 	function easymedia_admin_head_script() { ?>
 
-<style>a:focus {box-shadow: none !important; }</style>
+<style type="text/css">
+a:focus { box-shadow: none !important; }
+
+.sps_section .sps_title {
+	cursor: pointer !important;
+	border-bottom: 1px solid #ddd !important;
+	background: #eee !important;
+	padding: 10px 15px !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	min-height: 52px !important;
+	box-sizing: border-box !important;
+}
+
+.sps_section .sps_title h3 {
+	cursor: pointer !important;
+	font-size: 13px !important;
+	line-height: 1 !important;
+	text-transform: uppercase !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	font-weight: 700 !important;
+	color: #232323 !important;
+	float: none !important;
+	width: auto !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: 12px !important;
+}
+
+.sps_section .sps_title h3 img.inactive,
+.sps_section .sps_title h3 img.active {
+	margin: 0 !important;
+	width: 34px !important;
+	height: 34px !important;
+	float: none !important;
+	border-radius: 4px !important;
+	border: 1px solid #ccc !important;
+	background-color: #fff !important;
+	box-sizing: border-box !important;
+	display: block !important;
+}
+
+.sps_section .sps_title h3:hover img {
+	border-color: #999 !important;
+}
+
+.sps_section .sps_title span.submit {
+	display: flex !important;
+	align-items: center !important;
+	float: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	width: auto !important;
+}
+
+.sps_section .sps_title span.submit input.button {
+	margin: 0 !important;
+	line-height: 28px !important;
+	height: 30px !important;
+	vertical-align: middle !important;
+}
+
+.sps_section .sps_title .clearfix {
+	display: none !important;
+}
+</style>
 
 <script type="text/javascript">
 /*<![CDATA[*/
@@ -135,7 +206,7 @@ if ( is_admin() && ( isset( $_GET['page'] ) == 'emg_settings' ) && $_GET['page']
 			function emg_cp_reset(cmd) {
 				var data = {
 				action: 'emg_cp_reset',
-				security: '<?php echo wp_create_nonce( "easymedia-lite-nonce"); ?>',				
+				security: '<?php echo esc_js( wp_create_nonce( 'easymedia-lite-nonce' ) ); ?>',				
 				cmd: cmd,
 				};
 			
@@ -194,17 +265,17 @@ if ( is_admin() && ( isset( $_GET['page'] ) == 'emg_settings' ) && $_GET['page']
 				 //echo $valtmp;
 				 ?>	
 	
-        jQuery( '#<?php echo $theval['id']; ?>_slider' ).slider({
+        jQuery( '#<?php echo esc_js( $theval['id'] ); ?>_slider' ).slider({
             range: 'min',
             min: 0,
-            max: <?php echo $theval['max']; ?>,
+            max: <?php echo absint( $theval['max'] ); ?>,
 			
 			<?php if ( $theval['usestep'] == '1' ) { ?>
-			step: <?php echo $theval['step']; ?>,
+			step: <?php echo absint( $theval['step'] ); ?>,
 			<?php } ?>
-            value: '<?php echo $valtmp; ?>',
+            value: '<?php echo esc_js( $valtmp ); ?>',
             slide: function( event, ui ) {
-                jQuery( "#<?php echo $theval['id']; ?>" ).val( ui.value );
+                jQuery( "#<?php echo esc_js( $theval['id'] ); ?>" ).val( ui.value );
             	}
         	});
 		
@@ -280,9 +351,9 @@ if ( is_admin() && ( isset( $_GET['page'] ) == 'emg_settings' ) && $_GET['page']
 				 $colortmp = easy_get_option( $theval['id'] ); 
 				 ?>
 				 
-				 jQuery('#<?php echo $theval['id']; ?>_picker').children('div').css('backgroundColor', '<?php echo $colortmp; ?>');    
-				 jQuery('#<?php echo $theval['id']; ?>_picker').ColorPicker({
-					color: '<?php echo $colortmp; ?>',
+				 jQuery('#<?php echo esc_js( $theval['id'] ); ?>_picker').children('div').css('backgroundColor', '<?php echo esc_js( $colortmp ); ?>');    
+				 jQuery('#<?php echo esc_js( $theval['id'] ); ?>_picker').ColorPicker({
+					color: '<?php echo esc_js( $colortmp ); ?>',
 					onShow: function (colpkr) {
 						jQuery(colpkr).fadeIn(500);
 						return false;
@@ -293,8 +364,8 @@ if ( is_admin() && ( isset( $_GET['page'] ) == 'emg_settings' ) && $_GET['page']
 					},
 					onChange: function (hsb, hex, rgb) {
 						//jQuery(this).css('border','1px solid red');
-						jQuery('#<?php echo $theval['id']; ?>_picker').children('div').css('backgroundColor', '#' + hex);						
-						jQuery('#<?php echo $theval['id']; ?>_picker').next('input').attr('value','#' + hex);
+						jQuery('#<?php echo esc_js( $theval['id'] ); ?>_picker').children('div').css('backgroundColor', '#' + hex);						
+						jQuery('#<?php echo esc_js( $theval['id'] ); ?>_picker').next('input').attr('value','#' + hex);
 					}
 				  });
 				  
@@ -352,19 +423,150 @@ if ( isset( $_REQUEST['reset'] ) ) { echo '<script type="text/javascript">
 	$saveresmsg = 'Settings reset successfully...'; }
  
 ?>
-<div id="spg_container">
-    <div id="header">
-      <div class="logo">
-      <div class="emg-icon-option-left"></div>
-        <div class="emg-cp-title"><h2><?php echo EASYMEDIA_NAME . " (v " . EASYMEDIA_VERSION . ")"; ?></h2></div>
-      </div>
-      <div class="emg-icon-option-right"> </div>
-      <div style="clear: both;"></div>
-    </div>
+<style type="text/css">
+.sps_section .sps_title {
+	cursor: pointer !important;
+	border-bottom: 1px solid #ddd !important;
+	background: #eee !important;
+	padding: 0 15px !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	height: 54px !important;
+	min-height: 54px !important;
+	box-sizing: border-box !important;
+	user-select: none !important;
+}
 
-<div id="main">
-<div style="width: auto;" class="infoboxdemo"><a target='_blank' href='https://ghozy.link/jk73o'>Click Here to See Amazing Pro Version DEMO</a></div>
-<div class="infoboxsaveorreset"><?php echo $saveresmsg; ?></div>
+.sps_section .sps_title:hover {
+	background: #eaeaea !important;
+}
+
+.sps_section .sps_title h3 {
+	cursor: pointer !important;
+	font-size: 13px !important;
+	line-height: 1 !important;
+	text-transform: uppercase !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	font-weight: 700 !important;
+	color: #232323 !important;
+	float: none !important;
+	flex: 1 1 auto !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: 12px !important;
+	height: 100% !important;
+}
+
+.sps_section .sps_title h3 span {
+	line-height: 1 !important;
+}
+
+.sps_section .sps_title h3 img.inactive,
+.sps_section .sps_title h3 img.active {
+	margin: 0 !important;
+	width: 32px !important;
+	height: 32px !important;
+	float: none !important;
+	border-radius: 4px !important;
+	border: 1px solid #ccc !important;
+	background-color: #fff !important;
+	box-sizing: border-box !important;
+	display: block !important;
+	flex-shrink: 0 !important;
+}
+
+.sps_section .sps_title:hover h3 img {
+	border-color: #999 !important;
+}
+
+.sps_section .sps_title span.submit {
+	display: flex !important;
+	align-items: center !important;
+	float: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	width: auto !important;
+	flex-shrink: 0 !important;
+}
+
+.sps_section .sps_title span.submit input.button {
+	margin: 0 !important;
+	line-height: 28px !important;
+	height: 30px !important;
+	vertical-align: middle !important;
+}
+
+.sps_section .sps_title .clearfix {
+	display: none !important;
+}
+</style>
+
+<script type="text/javascript">
+(function($) {
+	function initEmgAccordion() {
+		// Cleanly unbind all previous click events to prevent double-toggle
+		$(document).off('click', '.sps_section h3');
+		$(document).off('click', '.sps_title');
+		$(document).off('click', '.sps_section .sps_title');
+		$('.sps_section h3').off('click').unbind('click');
+		$('.sps_section').off('click').unbind('click');
+		$('.sps_title').off('click').unbind('click');
+
+		// Attach single unified click handler
+		$(document).on('click', '.sps_section .sps_title', function(e) {
+			if ($(e.target).closest('.submit, input, button, a').length) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+
+			var $clickedTitle = $(this);
+			var $clickedSection = $clickedTitle.closest('.sps_section');
+			var $clickedOptions = $clickedSection.find('.sps_options');
+			var $clickedH3 = $clickedTitle.find('h3');
+			var $clickedImg = $clickedH3.find('img');
+
+			var isOpen = $clickedOptions.is(':visible');
+
+			// Immediately collapse ALL other sections and reset their icons
+			$('.sps_section .sps_options').not($clickedOptions).stop(true, true).slideUp(200);
+			$('.sps_section .sps_title h3').not($clickedH3).removeClass('active').addClass('inactive');
+			$('.sps_section .sps_title h3 img').not($clickedImg).removeClass('active').addClass('inactive');
+
+			if (isOpen) {
+				// Close this section if it was already open
+				$clickedH3.removeClass('active').addClass('inactive');
+				$clickedImg.removeClass('active').addClass('inactive');
+				$clickedOptions.stop(true, true).slideUp(200);
+			} else {
+				// Expand this section and set active icon
+				$clickedH3.removeClass('inactive').addClass('active');
+				$clickedImg.removeClass('inactive').addClass('active');
+				$clickedOptions.stop(true, true).slideDown(250);
+			}
+		});
+	}
+
+	$(document).ready(initEmgAccordion);
+	setTimeout(initEmgAccordion, 150);
+})(jQuery);
+</script>
+
+<div id="spg_container">
+     <div id="header">
+       <div class="logo">
+       <div class="emg-icon-option-left"></div>
+         <div class="emg-cp-title"><h2><?php echo esc_html( EASYMEDIA_NAME . ' (v ' . EASYMEDIA_VERSION . ')' ); ?></h2></div>
+       </div>
+       <div class="emg-icon-option-right"> </div>
+       <div style="clear: both;"></div>
+     </div>
+ 
+ <div id="main">
+ <div style="width: auto;" class="infoboxdemo"><a target='_blank' href='https://ghozy.link/jk73o'>Click Here to See Amazing Pro Version DEMO</a></div>
+ <div class="infoboxsaveorreset"><?php echo wp_kses_post( $saveresmsg ); ?></div>
 <form method="post">
 <div class="sps_wrap">
 <div class="sps_opts">
@@ -390,9 +592,9 @@ case 'text':
 ?>
 
 <div class="sps_input sps_text">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
- 	<input name="<?php echo $theval['id']; ?>" id="<?php echo $theval['id']; ?>" type="<?php echo $theval['type']; ?>" value="<?php if ( easy_get_option( $theval['id'] ) != "") { echo stripslashes( easy_get_option( $theval['id'] )  ); } else { echo $theval['std']; } ?>" />
- <small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
+ 	<input name="<?php echo esc_attr( $theval['id'] ); ?>" id="<?php echo esc_attr( $theval['id'] ); ?>" type="<?php echo esc_attr( $theval['type'] ); ?>" value="<?php if ( easy_get_option( $theval['id'] ) != '' ) { echo esc_attr( stripslashes( (string) easy_get_option( $theval['id'] ) ) ); } else { echo esc_attr( (string) $theval['std'] ); } ?>" />
+ <small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
  
  </div>
 <?php
@@ -401,9 +603,9 @@ case 'margin':
 ?>
 
 <div class="sps_input sps_text">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
- 	<input style="width:43px !important;" name="<?php echo $theval['id']; ?>" id="<?php echo $theval['id']; ?>" type="text" value="<?php if ( easy_get_option( $theval['id'] ) != "") { echo stripslashes( easy_get_option( $theval['id'] ) ); } else { echo $theval['std']; } ?>" /> <?php echo $theval['pixopr']; ?>
- <small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
+ 	<input style="width:43px !important;" name="<?php echo esc_attr( $theval['id'] ); ?>" id="<?php echo esc_attr( $theval['id'] ); ?>" type="text" value="<?php if ( easy_get_option( $theval['id'] ) != '' ) { echo esc_attr( stripslashes( (string) easy_get_option( $theval['id'] ) ) ); } else { echo esc_attr( (string) $theval['std'] ); } ?>" /> <?php echo esc_html( $theval['pixopr'] ); ?>
+ <small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
  
  </div>
 <?php
@@ -418,14 +620,14 @@ if ( ! is_array( $sizeall ) || empty( $sizeall ) ) {
 ?>
 	
 <div class="sps_input sps_text">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
    
- 	<strong>Width</strong> <input style="margin-left:3px; width:43px !important;" name="<?php echo $theval['id']; ?>[width]" id="<?php echo $theval['id']; ?>[width]" type="text" value="<?php if ( $sizeall['width'] != "") { echo stripslashes( $sizeall['width'] ); } else { echo $default; } ?>" /> <?php echo $theval['pixopr']; ?>
+ 	<strong>Width</strong> <input style="margin-left:3px; width:43px !important;" name="<?php echo esc_attr( $theval['id'] ); ?>[width]" id="<?php echo esc_attr( $theval['id'] ); ?>[width]" type="text" value="<?php if ( isset( $sizeall['width'] ) && $sizeall['width'] != '' ) { echo esc_attr( stripslashes( (string) $sizeall['width'] ) ); } else { echo esc_attr( is_array( $default ) && isset( $default['width'] ) ? (string) $default['width'] : (string) $default ); } ?>" /> <?php echo esc_html( $theval['pixopr'] ); ?>
     
 <span style="border-right:solid 1px #CCC; margin-right:11px; margin-left:9px;"></span>
- 	<strong>Height</strong> <input style="margin-left:3px; width:43px !important;" name="<?php echo $theval['id']; ?>[height]" id="<?php echo $theval['id']; ?>[height]" type="text" value="<?php if ( $sizeall['height'] != "") { echo stripslashes( $sizeall['height'] ); } else { echo $default; } ?>" /> <?php echo $theval['pixopr']; ?>
+ 	<strong>Height</strong> <input style="margin-left:3px; width:43px !important;" name="<?php echo esc_attr( $theval['id'] ); ?>[height]" id="<?php echo esc_attr( $theval['id'] ); ?>[height]" type="text" value="<?php if ( isset( $sizeall['height'] ) && $sizeall['height'] != '' ) { echo esc_attr( stripslashes( (string) $sizeall['height'] ) ); } else { echo esc_attr( is_array( $default ) && isset( $default['height'] ) ? (string) $default['height'] : (string) $default ); } ?>" /> <?php echo esc_html( $theval['pixopr'] ); ?>
 
- <small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+ <small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
  
  </div>
 <?php
@@ -434,9 +636,9 @@ case 'textarea':
 ?>
 
 <div class="sps_input sps_textarea">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
- 	<textarea style="vertical-align:top !important;" name="<?php echo $theval['id']; ?>" type="<?php echo $theval['type']; ?>" cols="" rows=""><?php if ( easy_get_option( $theval['id'] ) != "") { echo stripslashes(easy_get_option( $theval['id'] ) ); } else { echo $theval['std']; } ?></textarea>
- <small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
+ 	<textarea style="vertical-align:top !important;" name="<?php echo esc_attr( $theval['id'] ); ?>" cols="" rows=""><?php if ( easy_get_option( $theval['id'] ) != '' ) { echo esc_textarea( stripslashes( (string) easy_get_option( $theval['id'] ) ) ); } else { echo esc_textarea( (string) $theval['std'] ); } ?></textarea>
+ <small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
  
  </div>
   
@@ -446,9 +648,9 @@ case 'textareainfo':
 ?>
 
 <div class="sps_input sps_textarea">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
- 	<textarea id="emgwpinfo" style="vertical-align:top !important;" name="<?php echo $theval['id']; ?>" type="<?php echo $theval['type']; ?>" cols="" rows="" readonly><?php echo easmedia_get_wpinfo(); ?></textarea>
- <small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
+ 	<textarea id="emgwpinfo" style="vertical-align:top !important;" name="<?php echo esc_attr( $theval['id'] ); ?>" cols="" rows="" readonly><?php echo esc_textarea( (string) easmedia_get_wpinfo() ); ?></textarea>
+ <small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
  
  </div>
   
@@ -458,14 +660,14 @@ case 'select':
 ?>
 
 <div class="sps_input sps_select">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
 	
-<select name="<?php echo $theval['id']; ?>" id="<?php echo $theval['id']; ?>">
+<select name="<?php echo esc_attr( $theval['id'] ); ?>" id="<?php echo esc_attr( $theval['id'] ); ?>">
 <?php foreach ( $theval['options'] as $option ) { ?>
-		<option <?php if ( easy_get_option( $theval['id'] ) == $option) { echo 'selected="selected"'; } ?>><?php echo $option; ?></option><?php } ?>
+		<option value="<?php echo esc_attr( $option ); ?>" <?php if ( easy_get_option( $theval['id'] ) == $option ) { echo 'selected="selected"'; } ?>><?php echo esc_html( $option ); ?></option><?php } ?>
 </select>
 
-	<small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
 </div>
 <?php
 break;
@@ -473,10 +675,9 @@ case "checkbox":
 ?>
 
 <div class="sps_input sps_checkbox">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
-<?php ( easy_get_option( $theval['id'] ) == 1) ? $checked = 'checked="checked"' : $checked = ''; ?>
-<input name="<?php echo $theval['id']; ?>" id="<?php echo $theval['id']; ?>" class="switch" type="checkbox" <?php echo $checked; ?> value="1"></input>
-	<small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
+<input name="<?php echo esc_attr( $theval['id'] ); ?>" id="<?php echo esc_attr( $theval['id'] ); ?>" class="switch" type="checkbox" <?php checked( easy_get_option( $theval['id'] ), 1 ); ?> value="1" />
+	<small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
  
  </div>
 
@@ -485,11 +686,11 @@ case 'slider':
 ?>
 
 <div class="sps_input">
-	<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
+	<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
 	
-    <div id="<?php echo $theval['id']; ?>_slider" ></div><input style="margin-left:10px; width:43px !important;" name="<?php echo $theval['id']; ?>" id="<?php echo $theval['id']; ?>" type="text" value="<?php if ( easy_get_option( $theval['id'] ) != "") { echo stripslashes( easy_get_option( $theval['id'] ) ); } else { echo $theval['std']; } ?>" /> <?php echo $theval['pixopr']; ?>
+    <div id="<?php echo esc_attr( $theval['id'] ); ?>_slider" ></div><input style="margin-left:10px; width:43px !important;" name="<?php echo esc_attr( $theval['id'] ); ?>" id="<?php echo esc_attr( $theval['id'] ); ?>" type="text" value="<?php if ( easy_get_option( $theval['id'] ) != '' ) { echo esc_attr( stripslashes( (string) easy_get_option( $theval['id'] ) ) ); } else { echo esc_attr( (string) $theval['std'] ); } ?>" /> <?php echo esc_html( $theval['pixopr'] ); ?>
 
-	<small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
 </div>
 <?php
 break;
@@ -497,11 +698,11 @@ case "color":
 ?>
 
 <div class="sps_input sps_text">
-<label for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
+<label for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
 
-<div id="<?php echo $theval['id']; ?>_picker" class="colorSelector"><div></div></div>
-<input style="margin-left:3px; width:75px !important;" name="<?php echo $theval['id']; ?>" id="<?php echo $theval['id']; ?>" type="text" value="<?php if ( easy_get_option( $theval['id'] ) != "") { echo stripslashes( easy_get_option( $theval['id'] ) ); } else { echo $theval['std']; } ?>" />
-<small><?php echo $theval['desc']; ?></small>
+<div id="<?php echo esc_attr( $theval['id'] ); ?>_picker" class="colorSelector"><div></div></div>
+<input style="margin-left:3px; width:75px !important;" name="<?php echo esc_attr( $theval['id'] ); ?>" id="<?php echo esc_attr( $theval['id'] ); ?>" type="text" value="<?php if ( easy_get_option( $theval['id'] ) != '' ) { echo esc_attr( stripslashes( (string) easy_get_option( $theval['id'] ) ) ); } else { echo esc_attr( (string) $theval['std'] ); } ?>" />
+<small><?php echo wp_kses_post( $theval['desc'] ); ?></small>
 <div class="clearfix"></div>
 </div>
 
@@ -511,22 +712,22 @@ case 'pattern':
 ?>
 
 <div class="sps_input">
-	<label style="vertical-align:top !important;" for="<?php echo $theval['id']; ?>"><?php echo $theval['name']; ?></label>
-    <input type="hidden" value="<?php if ( easy_get_option( $theval['id'] ) != "") { echo stripslashes( easy_get_option( $theval['id'] ) ); } else { echo $theval['std']; } ?>" name="<?php echo $theval['id']; ?>" id="<?php echo $theval['id']; ?>" />
+	<label style="vertical-align:top !important;" for="<?php echo esc_attr( $theval['id'] ); ?>"><?php echo esc_html( $theval['name'] ); ?></label>
+    <input type="hidden" value="<?php if ( easy_get_option( $theval['id'] ) != '' ) { echo esc_attr( stripslashes( (string) easy_get_option( $theval['id'] ) ) ); } else { echo esc_attr( (string) $theval['std'] ); } ?>" name="<?php echo esc_attr( $theval['id'] ); ?>" id="<?php echo esc_attr( $theval['id'] ); ?>" />
     
     <div class="pattern_box">
     
-                	<div style="float: left;" class="pattern_overlay <?php if (!easy_get_option( $theval['id'] ) || easy_get_option( $theval['id'] ) == 'none') {echo 'pattern_selected';} ?>" id="no_pattern"> no pattern </div>
+                	<div style="float: left;" class="pattern_overlay <?php if ( ! easy_get_option( $theval['id'] ) || easy_get_option( $theval['id'] ) == 'none' ) { echo 'pattern_selected'; } ?>" id="no_pattern"> no pattern </div>
     
                 <?php 
 				foreach ( easmedia_patterns_ls() as $pattern ) {
-					(easy_get_option( $theval['id'] ) == $pattern) ? $sel = 'pattern_selected' : $sel = '';  
-					echo '<div class="pattern_overlay '.$sel.'" id="'.$pattern.'" style="background: url('.plugins_url( 'css/images/patterns/' , dirname(__FILE__) ).$pattern.') repeat top left transparent;"></div>';	
+					( easy_get_option( $theval['id'] ) == $pattern ) ? $sel = 'pattern_selected' : $sel = '';  
+					echo '<div class="pattern_overlay ' . esc_attr( $sel ) . '" id="' . esc_attr( $pattern ) . '" style="background: url(' . esc_url( plugins_url( 'css/images/patterns/' . $pattern, dirname( __FILE__ ) ) ) . ') repeat top left transparent;"></div>';	
 					
 				}
 				?>  
 </div>
-	<small><?php echo $theval['desc']; ?></small><div class="clearfix"></div>
+	<small><?php echo wp_kses_post( $theval['desc'] ); ?></small><div class="clearfix"></div>
 </div>
 
 
@@ -536,8 +737,8 @@ $i++;
 ?>
 
 <div class="sps_section">
-<?php $imgpth = plugins_url('images/trans.png' , __FILE__); ?>
-<div class="sps_title"><h3><img src="<?php echo $imgpth; ?>" class="inactive" alt="""><?php echo $theval['name']; ?></h3><span class="submit"><input name="save<?php echo $i; ?>" type="submit" value="Save Changes" class="button button-primary" />
+<?php $imgpth = plugins_url( 'images/trans.png', __FILE__ ); ?>
+<div class="sps_title"><h3><img src="<?php echo esc_url( $imgpth ); ?>" class="inactive" alt="" /><span><?php echo esc_html( $theval['name'] ); ?></span></h3><span class="submit"><input name="save<?php echo esc_attr( $i ); ?>" type="submit" value="Save Changes" class="button button-primary" />
 </span><div class="clearfix"></div></div>
 <div class="sps_options">
 
@@ -548,7 +749,7 @@ $i++;
 ?>
  
 <input type="hidden" name="action" value="save" />
-<p><a target="_blank" href="https://ghozylab.com/plugins/ordernow.php?order=proplus&utm_source=lite&utm_medium=settingspage&utm_campaign=orderfromcp" class="tsc_buttons2 red">Upgrade to Pro Version  &nbsp;for only $<?php echo EASYMEDIA_PRICE; ?></a> <span style="color:#666666;margin-left:2px; font-size:11px;">&nbsp; Need More Features? Upgrade to Pro Version!</span></p>
+<p><a target="_blank" href="https://ghozylab.com/plugins/ordernow.php?order=proplus&utm_source=lite&utm_medium=settingspage&utm_campaign=orderfromcp" class="tsc_buttons2 red">Upgrade to Pro Version  &nbsp;for only $<?php echo esc_html( EASYMEDIA_PRICE ); ?></a> <span style="color:#666666;margin-left:2px; font-size:11px;">&nbsp; Need More Features? Upgrade to Pro Version!</span></p>
  </div> </div>
  </form>
  </div>

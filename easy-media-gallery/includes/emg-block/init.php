@@ -40,20 +40,28 @@ if ( ! class_exists( 'Emg_Block' ) ) {
             wp_register_script(
                 $script_slug, // Handle.
                 plugin_dir_url( __FILE__ ).'/dist/blocks.build.js', // Block.build.js: We register the block here. Built with Webpack.
-                array( 'wp-blocks', 'wp-i18n', 'wp-element' ) // Dependencies, defined above.
+                array( 'wp-blocks', 'wp-i18n', 'wp-element', 'jquery' ), // Dependencies, defined above.
+                defined( 'EASYMEDIA_VERSION' ) ? EASYMEDIA_VERSION . '.5' : time()
             );
 
             // Styles.
             wp_register_style(
                 $style_slug, // Handle.
                 plugin_dir_url( __FILE__ ).'/dist/blocks.style.build.css', // Block style CSS.
-                array( 'wp-blocks' ) // Dependency to include the CSS after it.
+                array(), // No invalid 'wp-blocks' dependency.
+                defined( 'EASYMEDIA_VERSION' ) ? EASYMEDIA_VERSION : false
             );
+
+            $editor_style_deps = array( 'dashicons' );
+            if ( wp_style_is( 'wp-edit-blocks', 'registered' ) ) {
+                $editor_style_deps[] = 'wp-edit-blocks';
+            }
 
             wp_register_style(
                 $editor_style_slug, // Handle.
                 plugin_dir_url( __FILE__ ).'/dist/blocks.editor.build.css', // Block editor CSS.
-                array( 'wp-edit-blocks' ) // Dependency to include the CSS after it.
+                $editor_style_deps,
+                defined( 'EASYMEDIA_VERSION' ) ? EASYMEDIA_VERSION . '.3' : time()
             );
 
             register_block_type(

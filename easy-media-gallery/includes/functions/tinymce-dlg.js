@@ -26,57 +26,139 @@
 
 jQuery(document).ready(function ($) {
 
-	var sortcdtype, sctype, isBlock = false,
-		old_tb_remove = window.tb_remove;
+	var sortcdtype, sctype, isBlock = false;
+
+	// Ensure modal content is preserved and never destroyed by Thickbox
+	function ensureModalContentInPlace() {
+		var $tinyemg = $("#TB_ajaxContent #tinyemg");
+		if ($tinyemg.length) {
+			$("#emgmodal").append($tinyemg);
+		}
+	}
+
+	// Safe close modal handler
+	var original_tb_remove = window.tb_remove;
+
+	function closeEmgModal() {
+		ensureModalContentInPlace();
+
+		try {
+			$('#TB_window').trigger('unload');
+		} catch (e) {}
+
+		if (typeof original_tb_remove === 'function') {
+			try {
+				original_tb_remove();
+			} catch (e) {}
+		}
+
+		$('#TB_window, #TB_overlay, #TB_load').stop(true, true).fadeOut(200, function () {
+			$(this).remove();
+		});
+
+		$('body, html').css({ height: 'auto', width: 'auto' });
+		$('html').css('overflow', '');
+	}
+
+	var tb_remove = closeEmgModal;
+	window.tb_remove = closeEmgModal;
+
+	if (window.emgallery && window.emgallery.data) {
+		window.emgallery.data.thickbox = closeEmgModal;
+	}
 
 	// Multiselect initiate
 	setmultiselect();
 
-	// LOAD GENERATOR
-	$("body").delegate("#emg_gut_shorcode-button, .emg-sc-generator, #emgicons_gut_shorcode", "click", function () {
+	// Function to open the Shortcode Generator Modal
+	function openEmgModal(blockMode) {
+		isBlock = !!blockMode;
 
-		isBlock = false;
-		if ($(this).hasClass('emg-sc-generator')) isBlock = true;
+		// Put content back into #emgmodal before any Thickbox operation
+		ensureModalContentInPlace();
 
-		setTimeout(function () {
-			tb_show('<img class="emg_sc_ttl_ico" src="' + emg_tinymce_vars.sc_icon + '" alt="Easy Media Gallery">Gallery Shortcode<span class="emg_cp_version">v' + emg_tinymce_vars.sc_version + "</span>", "#TB_inline?inlineId=emgmodal");
+		// Clean up any stale Thickbox elements
+		$("#TB_load").remove();
+		$("#TB_window").remove();
+		$("#TB_overlay").remove();
 
-			$("#TB_window").addClass("TB_emg_window");
-			$("#TB_overlay").addClass("TB_emg_overlay");
+		var iconUrl = (typeof emg_tinymce_vars !== 'undefined' && emg_tinymce_vars.sc_icon) ? emg_tinymce_vars.sc_icon : '';
+		var versionStr = (typeof emg_tinymce_vars !== 'undefined' && emg_tinymce_vars.sc_version) ? 'v' + emg_tinymce_vars.sc_version : '';
 
-			$("#emgtinymce_select_cat_div, #emgtinymce_select_sing_media_div, #mediacustomsize, #customcolumns, #customalign, #mediacustomstyle").hide();
-			$("#defgallery").prop("checked", true);
-			$('.setaspro').prop("disabled", true);
-			$('#thisresult, #thisgallresult').val('');
+		tb_show('<img class="emg_sc_ttl_ico" src="' + iconUrl + '" alt="Easy Media Gallery">Gallery Shortcode<span class="emg_cp_version">' + versionStr + '</span>', "#TB_inline?inlineId=emgmodal");
 
-			$('#horizontalTab').responsiveTabs({
-				active: 0,
-				rotate: false,
-				startCollapsed: 'accordion',
-				collapsible: 'accordion',
-				setHash: false,
-				animation: 'slide',
-				duration: 100,
-				activate: function (event, tab) {
+		$("#TB_window").addClass("TB_emg_window");
+		$("#TB_overlay").addClass("TB_emg_overlay");
 
-					if (tab.id == 0) sortcdtype = 'gallery';
-					else sortcdtype = 'others';
+		$("#emgtinymce_select_cat_div, #emgtinymce_select_sing_media_div, #mediacustomsize, #customcolumns, #customalign, #mediacustomstyle").hide();
+		$("#defgallery").prop("checked", true);
+		$('.setaspro').prop("disabled", true);
+		$('#thisresult, #thisgallresult').val('');
 
-				},
+		if ($.fn.responsiveTabs) {
+			try {
+				$('#horizontalTab').responsiveTabs({
+					active: 0,
+					rotate: false,
+					startCollapsed: false,
+					collapsible: false,
+					setHash: false,
+					animation: 'default',
+					duration: 0,
+					activate: function (event, tab) {
+						if (tab.id == 0) sortcdtype = 'gallery';
+						else sortcdtype = 'others';
+					}
+				});
+				$('#horizontalTab').responsiveTabs('activate', 0);
+			} catch (e) {}
+		}
 
-			});
+		// Ensure primary tab panel is visibly active
+		$('#tab-1').show().css('display', 'block');
+		$('#tab-2').hide();
+		$('#horizontalTab ul.r-tabs-nav li').first().addClass('r-tabs-state-active');
 
-			$("#TB_closeWindowButton").replaceWith($("<div class='closetb' id='TB_closeWindowButton'><span class='screen-reader-text'>Close</span><span class='tb-close-icon'></span></div>"));
-			$(".TB_emg_overlay").bind("click", tb_remove);
-			// Set default tab
-			$('#emgfirsttab a').trigger('click');
+		$("#TB_closeWindowButton").replaceWith($("<div class='closetb' id='TB_closeWindowButton'><span class='screen-reader-text'>Close</span><span class='tb-close-icon'></span></div>"));
+		$(".TB_emg_overlay, .closetb, #TB_closeWindowButton").off('click').on("click", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			closeEmgModal();
+		});
 
-			emgtbReposition();
-			fillDefaultFormData();
+		emgtbReposition();
+		fillDefaultFormData();
+	}
 
-		}, 300);
+	// Expose globally to emgallery namespace
+	window.emgallery = window.emgallery || {};
+	window.emgallery.openModal = openEmgModal;
 
+	// LOAD GENERATOR - Modern jQuery .on() delegation on document
+	$(document).on("click", "#emg_gut_shorcode-button, .emg-sc-generator, #emgicons_gut_shorcode", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		e.stopImmediatePropagation();
+		openEmgModal($(this).hasClass('emg-sc-generator'));
 	});
+
+	// Support Gutenberg editor canvas iframe (WordPress 6.3+)
+	function attachIframeListeners() {
+		$('iframe[name="editor-canvas"]').each(function () {
+			try {
+				var iframeDoc = this.contentDocument || (this.contentWindow && this.contentWindow.document);
+				if (iframeDoc && !iframeDoc._emgAttached) {
+					iframeDoc._emgAttached = true;
+					$(iframeDoc).on("click", ".emg-sc-generator", function (e) {
+						e.preventDefault();
+						openEmgModal(true);
+					});
+				}
+			} catch (err) {}
+		});
+	}
+	setInterval(attachIframeListeners, 1000);
+	attachIframeListeners();
 
 	function fillDefaultFormData() {
 
@@ -115,8 +197,9 @@ jQuery(document).ready(function ($) {
 
 		});
 
-		if (isBlock) emgFillForm();
-		else {
+		if (isBlock && emgallery.data && emgallery.data.that && emgallery.data.that.props && emgallery.data.that.props.attributes && emgallery.data.that.props.attributes.data) {
+			emgFillForm();
+		} else {
 			refreshMultiselect(true);
 			populateCheckBox();
 		}
@@ -124,153 +207,154 @@ jQuery(document).ready(function ($) {
 	}
 
 	function setmultiselect() {
+		if (typeof $.fn.multiselect !== 'function') {
+			return;
+		}
+		try {
+			$("#listcustomgallery").multiselect({
+				multiple: true,
+				header: "Select Gallery",
+				noneSelectedText: "Select Gallery",
+				selectedList: 1,
+				header: true
+			});
 
-		$("#listcustomgallery").multiselect({
-			multiple: true,
-			header: "Select Gallery",
-			noneSelectedText: "Select Gallery",
-			selectedList: 1,
-			header: true
-		});
+			$("#emgtinymce_select_method").multiselect({
+				multiple: false,
+				header: "Order Media by",
+				noneSelectedText: "Select an Option",
+				selectedList: 1,
+				header: false
+			});
 
-		$("#emgtinymce_select_method").multiselect({
-			multiple: false,
-			header: "Order Media by",
-			noneSelectedText: "Select an Option",
-			selectedList: 1,
-			header: false
-		});
+			$("#emgtinymce_select_cat").multiselect({
+				multiple: false,
+				header: "Choose a category",
+				noneSelectedText: "Select Category",
+				selectedList: 1,
+				header: false
+			});
 
-		$("#emgtinymce_select_cat").multiselect({
-			multiple: false,
-			header: "Choose a category",
-			noneSelectedText: "Select Category",
-			selectedList: 1,
-			header: false
-		});
+			$("#emgtinymce_select_sing_media").multiselect({
+				multiple: true,
+				header: "Choose Media",
+				noneSelectedText: "Select Media",
+				selectedList: 1,
+				header: true
+			});
 
-		$("#emgtinymce_select_sing_media").multiselect({
-			multiple: true,
-			header: "Choose Media",
-			noneSelectedText: "Select Media",
-			selectedList: 1,
-			header: true
-		});
+			$("#select_custom_col").multiselect({
+				multiple: false,
+				header: "Select Columns",
+				noneSelectedText: "Select Columns",
+				selectedList: 1,
+				header: false
+			});
 
-		$("#select_custom_col").multiselect({
-			multiple: false,
-			header: "Select Columns",
-			noneSelectedText: "Select Columns",
-			selectedList: 1,
-			header: false
-		});
+			$("#select_cus_align").multiselect({
+				multiple: false,
+				header: "Select Align",
+				noneSelectedText: "Select Align",
+				selectedList: 1,
+				header: false
+			});
 
-		$("#select_cus_align").multiselect({
-			multiple: false,
-			header: "Select Align",
-			noneSelectedText: "Select Align",
-			selectedList: 1,
-			header: false
-		});
+			$("#select_cus_style").multiselect({
+				multiple: false,
+				header: "Select Style",
+				noneSelectedText: "Select Style",
+				selectedList: 1,
+				header: false
+			});
 
-		$("#select_cus_style").multiselect({
-			multiple: false,
-			header: "Select Style",
-			noneSelectedText: "Select Style",
-			selectedList: 1,
-			header: false
-		});
-
-		refreshMultiselect(true);
-
+			refreshMultiselect(true);
+		} catch (e) {}
 	}
 
 	function refreshMultiselect(uncheck) {
+		if (typeof $.fn.multiselect !== 'function') {
+			return;
+		}
+		try {
+			if (uncheck) $("#listcustomgallery").multiselect("uncheckAll");
 
-		if (uncheck) $("#listcustomgallery").multiselect("uncheckAll");
-
-		$("#select_custom_col").multiselect('refresh');
-		$("#emgtinymce_select_method").multiselect('refresh');
-		$("#select_cus_align").multiselect('refresh');
-		$("#listcustomgallery").multiselect("refresh");
-
+			$("#select_custom_col").multiselect('refresh');
+			$("#emgtinymce_select_method").multiselect('refresh');
+			$("#select_cus_align").multiselect('refresh');
+			$("#listcustomgallery").multiselect("refresh");
+		} catch (e) {}
 	}
 
 	function emgFillForm() {
+		try {
+			var hasData = false;
+			if (emgallery.data && emgallery.data.that && emgallery.data.that.props && emgallery.data.that.props.attributes && emgallery.data.that.props.attributes.data) {
+				hasData = true;
+			}
 
-		if (emgallery.data.that.props.attributes.data != '') {
+			if (hasData) {
+				var scAttr = JSON.parse(emgallery.data.that.props.attributes.data),
+					data = {};
 
-			var scAttr = JSON.parse(emgallery.data.that.props.attributes.data),
-				data = {};
+				$('#' + scAttr.params.sc_form).emgFormRestore(scAttr.params.sc_params);
+				// Set Tab
+				$('[data-formid=' + scAttr.params.sc_form + ']').trigger('click');
 
-			$('#' + scAttr.params.sc_form).emgFormRestore(scAttr.params.sc_params);
-			// Set Tab
-			$('[data-formid=' + scAttr.params.sc_form + ']').trigger('click');
+				var mltslct = ['gallery_value', 'singlemedia_value'];
+				var singslct = ['emgtinymce_select_method', 'emgtinymce_select_cat', 'select_cus_align', 'select_cus_style', 'select_cus_style_sprd'];
 
-			var mltslct = ['gallery_value', 'singlemedia_value'];
-			var singslct = ['emgtinymce_select_method', 'emgtinymce_select_cat', 'select_cus_align', 'select_cus_style', 'select_cus_style_sprd'];
-
-			setTimeout(function () {
-
-				$.each(scAttr.params.sc_params, function (k, v) {
-
-					if ($.inArray(k, singslct) > -1) {
-
-						var selectNameSing = $('[name=' + k + ']');
-
-						$(selectNameSing).multiselect("widget").find(":radio").each(function () {
-
-							var that = this;
-							if ($(that).val() == v) {
-								$(that).trigger('click');
-								$(selectNameSing).val(v).trigger('change');
+				setTimeout(function () {
+					$.each(scAttr.params.sc_params, function (k, v) {
+						if ($.inArray(k, singslct) > -1) {
+							var selectNameSing = $('[name=' + k + ']');
+							if (typeof $(selectNameSing).multiselect === 'function') {
+								try {
+									$(selectNameSing).multiselect("widget").find(":radio").each(function () {
+										var that = this;
+										if ($(that).val() == v) {
+											$(that).trigger('click');
+											$(selectNameSing).val(v).trigger('change');
+										}
+									});
+								} catch (err) {}
 							}
+						}
 
-						});
-
-					}
-
-					if ($.inArray(k, mltslct) > -1) {
-
-						var id = v.split(",").map(function (item) {
-							return item.trim();
-						});
-
-						var selectName = $('[name=' + k + ']').data('select');
-
-						$('#' + selectName).multiselect('uncheckAll');
-
-						$.each(id, function (i, vl) {
-
-							$('#' + selectName).multiselect("widget").find(":checkbox").each(function () {
-
-								var that = this;
-								if ($(that).val() == vl) $(that).trigger('click');
-
+						if ($.inArray(k, mltslct) > -1) {
+							var id = v.split(",").map(function (item) {
+								return item.trim();
 							});
 
-						});
-						// OMG :p
-						$('#' + selectName).next('button').eq(0).trigger('click').trigger('click');
+							var selectName = $('[name=' + k + ']').data('select');
+							if (typeof $('#' + selectName).multiselect === 'function') {
+								try {
+									$('#' + selectName).multiselect('uncheckAll');
+									$.each(id, function (i, vl) {
+										$('#' + selectName).multiselect("widget").find(":checkbox").each(function () {
+											var that = this;
+											if ($(that).val() == vl) $(that).trigger('click');
+										});
+									});
+									$('#' + selectName).next('button').eq(0).trigger('click').trigger('click');
+								} catch (err) {}
+							}
+						}
+					});
 
-					}
+					// Checkbox populate
+					populateCheckBox();
+				}, 100);
 
-				});
-
-				// Checkbox populate
+			} else {
+				$('#emgfirsttab a').trigger('click');
 				populateCheckBox();
+			}
 
-			}, 100);
-
-		} else {
-
-			$('#emgfirsttab a').trigger('click');
+			refreshMultiselect();
+		} catch (ex) {
 			populateCheckBox();
-
+			refreshMultiselect();
 		}
-
-		refreshMultiselect();
-
 	}
 
 	function populateCheckBox() {
@@ -314,13 +398,18 @@ jQuery(document).ready(function ($) {
 	});
 
 	// Close Thickbox
-	$("body").delegate(".closetb, .TB_emg_overlay", "click", function () {
-		tb_remove();
+	$(document).on("click", ".closetb, #TB_closeWindowButton, .TB_emg_overlay, #TB_overlay", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		closeEmgModal();
 	});
 
-	var tb_remove = function () {
-		old_tb_remove(); // calls the tb_remove() of the Thickbox plugin
-	};
+	// Support ESC key to close modal
+	$(document).on("keydown.emgModal", function (e) {
+		if (e.keyCode === 27 && $('#TB_window').is(':visible')) {
+			closeEmgModal();
+		}
+	});
 
 
 	// Show/Hide element

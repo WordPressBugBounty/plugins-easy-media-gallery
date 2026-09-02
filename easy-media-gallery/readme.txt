@@ -2,9 +2,9 @@
 Contributors: GhozyLab
 Donate link: https://ghozy.link/rs3bq
 Tags: gallery, photo gallery, image gallery, slider, image slider
-Requires at least: 3.4
-Tested up to: 6.9
-Stable tag: 1.3.170
+Requires at least: 4.6
+Tested up to: 7.1
+Stable tag: 1.3.171
 Requires PHP: 7.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -303,11 +303,18 @@ But seriously, I just want to drink coffee for free, so help a developer out. Yo
 8. HTML5 video player
 9. Google Maps and Google Street View
 
-= 1.3.170 =
+= 1.3.171 =
 
 IMPORTANT! SECURITY BUGS FIX, PLEASE UPDATE NOW!
 
 == Changelog ==
+
+= 1.3.171 =
+* Update : WordPress 6.9+ and Gutenberg compatibility
+* Fixed : Shortcode generator modal in Block and Classic Editor
+* Fixed : Settings panel accordion interaction
+* Fixed : Security hardening and output escaping
+* Fixed : Many other PHP and CSS clean and optimization
 
 = 1.3.170 =
 * Update : WordPress 6.3 compatibility

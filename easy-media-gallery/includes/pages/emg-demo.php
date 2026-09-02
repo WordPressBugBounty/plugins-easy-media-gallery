@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /* @since 1.3.29 */
 
 
@@ -14,13 +16,13 @@ function easmedia_demo_page() {
 
    <div class="metabox-holder" style="display:inline-block; max-width: 30%; float: <?php echo ( is_rtl() ? 'left' : 'right' ); ?>; vertical-align:top;">
 			<div class="postbox">
-            <h3><?php _e( 'Check it Out!', 'easy-media-gallery' ); ?></h3> 
+            <h3><?php esc_html_e( 'Check it Out!', 'easy-media-gallery' ); ?></h3> 
             <?php easmedia_news_metabox(); ?>
            </div>
       </div>
 <div class="metabox-holder" style="max-width:73%; display:block;">
 			<div class="postbox">
-				<h3><?php _e( 'Just Like, Share or Subscribe and Get Free Updates', 'easy-media-gallery' ); ?></h3>
+				<h3><?php esc_html_e( 'Just Like, Share or Subscribe and Get Free Updates', 'easy-media-gallery' ); ?></h3>
                 
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
@@ -47,7 +49,7 @@ function easmedia_demo_page() {
 
 		<div class="metabox-holder" style="max-width:73%; display:block;">
 			<div class="postbox">
-				<h3><?php _e( 'Video Tutorials', 'easy-media-gallery' ); ?></h3>
+				<h3><?php esc_html_e( 'Video Tutorials', 'easy-media-gallery' ); ?></h3>
         <div id="easymedia_docs1" style="padding-left:10px !important;">
         <ul id="vidlist" style="list-style: square; position:relative; margin-left:15px; margin-bottom:25px; <?php echo ( is_rtl() ? 'right: 30px;' : '' ); ?>">
         <li><a href="#" data-toggle="modal" data-target="#videoModal" data-videolink="https://www.youtube.com/embed/pjHvRoV2Bn8">How to Create Simple Photo Albums</a></li>
@@ -113,11 +115,11 @@ jQuery(document).ready(function($) {
 });
 // ]]></script>
 
- <?php
- if ( easy_get_option( 'easymedia_disen_dasnews' ) == '3' ) {  ?>
- <div class="metabox-holder" style="max-width:100%; display:block;">
+  <?php
+  if ( easy_get_option( 'easymedia_disen_dasnews' ) == '3' ) {  ?>
+  <div class="metabox-holder" style="max-width:100%; display:block;">
 			<div class="postbox">
-				<h3><?php _e( 'Share Easy Media Gallery', 'easy-media-gallery' ); ?></h3>
+				<h3><?php esc_html_e( 'Share Easy Media Gallery', 'easy-media-gallery' ); ?></h3>
         <div id="easymedia_docs2" style="padding: 3px 3px 3px 17px !important; ">
         <?php emg_dashboard_widget(); ?>
     </div>
@@ -127,9 +129,9 @@ jQuery(document).ready(function($) {
 
 <div class="metabox-holder" style="max-width:100%; display:block;">
 			<div class="postbox">
-				<h3><?php _e( 'New Plugin, check it out!', 'easy-media-gallery' ); ?></h3>
+				<h3><?php esc_html_e( 'New Plugin, check it out!', 'easy-media-gallery' ); ?></h3>
         <div id="easymedia_docs3" style="padding:10px !important; ">
-<a style="outline: none !important;" href="https://ghozy.link/5u0gj" target="_blank"><img style="cursor:pointer;" src="<?php echo plugins_url( 'images/best-cp-plugin.png' , dirname(__FILE__) ); ?>" width="728" height="90" alt="New Release!" ></a>
+<a style="outline: none !important;" href="https://ghozy.link/5u0gj" target="_blank"><img style="cursor:pointer;" src="<?php echo esc_url( plugins_url( 'images/best-cp-plugin.png', dirname( __FILE__ ) ) ); ?>" width="728" height="90" alt="<?php esc_attr_e( 'New Release!', 'easy-media-gallery' ); ?>" ></a>
     </div>
     </div>
   </div>

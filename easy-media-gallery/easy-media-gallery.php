@@ -6,7 +6,11 @@ Description: Easy Media Gallery (Lite) - Displaying your gallery, video (MP4, Yo
 Author: PT. GHOZY LAB LLC
 Text Domain: easy-media-gallery
 Domain Path: /languages
-Version: 1.3.170
+Version: 1.3.171
+Requires at least: 4.6
+Requires PHP: 7.2
+License: GPLv3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Author URI: https://ghozylab.com/
  */
 
@@ -41,7 +45,7 @@ if ( ! defined( 'EASYMEDIA_NAME' ) ) {
 
 // Plugin Version
 if ( ! defined( 'EASYMEDIA_VERSION' ) ) {
-    define( 'EASYMEDIA_VERSION', '1.3.170' );
+    define( 'EASYMEDIA_VERSION', '1.3.171' );
 }
 
 // Pro Price
@@ -191,8 +195,8 @@ function emg_init()
 	|--------------------------------------------------------------------------
 	*/
     $labels = array(
-        'name'               => _x( 'Easy Media Gallery Lite', 'post type general name' ),
-        'singular_name'      => _x( 'Easy Media Gallery Lite', 'post type singular name' ),
+        'name'               => _x( 'Easy Media Gallery Lite', 'post type general name', 'easy-media-gallery' ),
+        'singular_name'      => _x( 'Easy Media Gallery Lite', 'post type singular name', 'easy-media-gallery' ),
         'add_new'            => __( 'Add New Media', 'easy-media-gallery' ),
         'add_new_item'       => __( 'Easy Media Item', 'easy-media-gallery' ),
         'edit_item'          => __( 'Edit Media', 'easy-media-gallery' ),
@@ -243,7 +247,7 @@ function emg_admin_init()
 
         if ( is_plugin_active( $plugin ) ) {
             deactivate_plugins( $plugin );
-            wp_die( ''.EASYMEDIA_NAME." requires WordPress 3.3 or higher, this plugin has been deactivated! Please upgrade WordPress and try again.<br /><br />Back to <a href='".admin_url()."'>WordPress admin</a>" );
+            wp_die( sprintf( '%1$s requires WordPress 3.3 or higher, this plugin has been deactivated! Please upgrade WordPress and try again.<br /><br />Back to <a href="%2$s">WordPress admin</a>', esc_html( EASYMEDIA_NAME ), esc_url( admin_url() ) ) );
         }
 
     }
@@ -257,7 +261,7 @@ function emg_admin_init()
         if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
             require_once ABSPATH.'/wp-admin/includes/plugin.php';
             deactivate_plugins( __FILE__ );
-            wp_die( ''.EASYMEDIA_NAME." requires PHP 5.2 or higher. The plugin has now disabled itself. Please ask your hosting provider for this issue.<br /><br />Back to <a href='".admin_url()."'>WordPress admin</a>" );
+            wp_die( sprintf( '%1$s requires PHP 5.2 or higher. The plugin has now disabled itself. Please ask your hosting provider for this issue.<br /><br />Back to <a href="%2$s">WordPress admin</a>', esc_html( EASYMEDIA_NAME ), esc_url( admin_url() ) ) );
         } else {
             return;
         }
@@ -273,7 +277,7 @@ function emg_admin_init()
         if ( ! extension_loaded( 'gd' ) && ! function_exists( 'gd_info' ) ) {
             require_once ABSPATH.'/wp-admin/includes/plugin.php';
             deactivate_plugins( __FILE__ );
-            wp_die( '<strong>GD Library</strong> for PHP is not installed on your server. '.EASYMEDIA_NAME." requires it to function properly. The plugin has now disabled itself. Please ask your hosting provider for this issue.<br /><br />Back to <a href='".admin_url()."'>WordPress admin</a>" );
+            wp_die( sprintf( '<strong>GD Library</strong> for PHP is not installed on your server. %1$s requires it to function properly. The plugin has now disabled itself. Please ask your hosting provider for this issue.<br /><br />Back to <a href="%2$s">WordPress admin</a>', esc_html( EASYMEDIA_NAME ), esc_url( admin_url() ) ) );
         }
 
     }
@@ -290,7 +294,8 @@ function emg_jetpack_modules_photon()
 
     if ( class_exists( 'Jetpack' ) && in_array( 'photon', Jetpack::get_active_modules() ) ) {
 
-        echo '<div class="error"><span class="emgwarning"><p class="emgwarningp">You need to deactivate JetPack <strong>Photon Module</strong> to make <strong>'.EASYMEDIA_NAME.'</strong> work!</p><p><a href="'.admin_url().'admin.php?page=jetpack&action=deactivate&module=photon&_wpnonce='.wp_create_nonce( 'jetpack_deactivate-photon' ).'" >Deactivate Now!</a>'.'</p></div>';
+        // translators: 1: JetPack module name, 2: plugin name.
+        echo '<div class="error"><span class="emgwarning"><p class="emgwarningp">' . sprintf( esc_html__( 'You need to deactivate JetPack %1$s to make %2$s work!', 'easy-media-gallery' ), '<strong>Photon Module</strong>', '<strong>' . esc_html( EASYMEDIA_NAME ) . '</strong>' ) . '</p><p><a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?page=jetpack&action=deactivate&module=photon' ), 'jetpack_deactivate-photon' ) ) . '">' . esc_html__( 'Deactivate Now!', 'easy-media-gallery' ) . '</a></p></span></div>';
 
     }
 
@@ -352,7 +357,7 @@ function easmedia_settings_link_rowmeta( $link, $file )
     if ( $file == $this_plugin ) {
         $link[] = '<a href="https://ghozy.link/rs3bq" target="_blank"><span class="dashicons dashicons-heart"></span>&nbsp;'.__( 'Donate', 'easy-media-gallery' ).'</a>';
         $link[] = '<a href="https://www.youtube.com/GhozyLab" target="_blank"><span class="dashicons dashicons-editor-help"></span>&nbsp;'.__( 'Tutorials', 'easy-media-gallery' ).'</a>';
-        $link[] = '<a href="https://wordpress.org/support/plugin/easy-media-gallery/reviews/?filter=5" target="_blank"><span class="dashicons dashicons-star-filled"></span>&nbsp;'.__( 'Rate Us', 'easy-media-gallery' ).'</a>';
+        $link[] = '<a href="https://wordpress.org/support/plugin/easy-media-gallery/reviews/#new-post" target="_blank"><span class="dashicons dashicons-star-filled"></span>&nbsp;'.__( 'Rate Us', 'easy-media-gallery' ).'</a>';
     }
 
     return $link;
@@ -370,11 +375,11 @@ function easmedia_easymediagallery_icons()
 {?>
 	<style type="text/css" media="screen">
 	#icon-edit.icon32-posts-easymediagallery {
-		background: url(<?php echo plugins_url( 'includes/images/easymedia-32x32.png', __FILE__ ) ?>) no-repeat top left transparent !important;
+		background: url(<?php echo esc_url( plugins_url( 'includes/images/easymedia-32x32.png', __FILE__ ) ); ?>) no-repeat top left transparent !important;
 	}
 
 	#icon-edit.icon32-posts-easymedia {
-		background: url(<?php echo plugins_url( 'includes/images/easymedia-32x32.png', __FILE__ ) ?>) no-repeat top left transparent !important;
+		background: url(<?php echo esc_url( plugins_url( 'includes/images/easymedia-32x32.png', __FILE__ ) ); ?>) no-repeat top left transparent !important;
 	}
 	</style>
 <?php
@@ -425,30 +430,30 @@ function easmedia_custom_columns_easymedia( $easymedia_columns, $post_id )
                         else {
                             $timthumbimg   = easymedia_resizer( $thumbmedia, $globalimgsize[1], $globalimgsize[2], 70, 70, true );
                         }
-                        echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.$timthumbimg.'"></img>';
+                        echo '<img class="imgthumblist" width="70" height="70" alt="' . esc_attr__( 'Thumbnail', 'easy-media-gallery' ) . '" src="' . esc_url( $timthumbimg ) . '" />';
                     } else {
-                        echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.plugins_url( 'includes/images/no-image-available.jpg', __FILE__ ).'"></img>';
+                        echo '<img class="imgthumblist" width="70" height="70" alt="' . esc_attr__( 'Thumbnail', 'easy-media-gallery' ) . '" src="' . esc_url( plugins_url( 'includes/images/no-image-available.jpg', __FILE__ ) ) . '" />';
                     }
 
                     break;
 
                 case 'Video':
-                    echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.plugins_url( 'images/video.png', __FILE__ ).'"></img>';
+                    echo '<img class="imgthumblist" width="70" height="70" alt="' . esc_attr__( 'Thumbnail', 'easy-media-gallery' ) . '" src="' . esc_url( plugins_url( 'images/video.png', __FILE__ ) ) . '" />';
                     break;
 
                 case 'Audio':
-                    echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.plugins_url( 'images/audio.png', __FILE__ ).'"></img>';
+                    echo '<img class="imgthumblist" width="70" height="70" alt="' . esc_attr__( 'Thumbnail', 'easy-media-gallery' ) . '" src="' . esc_url( plugins_url( 'images/audio.png', __FILE__ ) ) . '" />';
                     break;
 
                 case 'Multiple Images (Slider)':
-                    echo '<img class="imgthumblist" width="70" height="70" alt="Thumbnail" src="'.plugins_url( 'images/gallery.png', __FILE__ ).'"></img>';
+                    echo '<img class="imgthumblist" width="70" height="70" alt="' . esc_attr__( 'Thumbnail', 'easy-media-gallery' ) . '" src="' . esc_url( plugins_url( 'images/gallery.png', __FILE__ ) ) . '" />';
                     break;
 
             }
 
             break;
         case 'psg_id':
-            echo $post_id;
+            echo absint( $post_id );
 
             break;
 
@@ -459,13 +464,14 @@ function easmedia_custom_columns_easymedia( $easymedia_columns, $post_id )
             if ( isset( $mediatype ) && $mediatype != 'Select' ) {
 
                 if ( trim( $mediatype ) == 'Multiple Images (Slider)' ) {
-                    echo $mediatype.'<br><span class="emgttlimage">Total image(s): '.$ittl.'</span>';
+                    // translators: %d: Total number of images.
+                    echo esc_html( $mediatype ) . '<br><span class="emgttlimage">' . sprintf( esc_html__( 'Total image(s): %d', 'easy-media-gallery' ), absint( $ittl ) ) . '</span>';
                 } else {
-                    echo $mediatype;
+                    echo esc_html( $mediatype );
                 }
 
             } else {
-                echo __( 'None', 'easy-media-gallery' );
+                esc_html_e( 'None', 'easy-media-gallery' );
             }
 
             break;
@@ -480,8 +486,10 @@ function easmedia_custom_columns_easymedia( $easymedia_columns, $post_id )
                     $item_cats[] = $cat->name;
                 }
 
-                echo implode( ', ', $item_cats );
-            } else {echo 'Uncategorized';}
+                echo esc_html( implode( ', ', $item_cats ) );
+            } else {
+                esc_html_e( 'Uncategorized', 'easy-media-gallery' );
+            }
 
             break;
 
@@ -494,24 +502,48 @@ function easmedia_custom_columns_easymedia( $easymedia_columns, $post_id )
 // jQuery Auto Save Media Order
 function easmedia_save_easymedia_sorted_order()
 {
+    // Verify nonce for CSRF protection
+    check_ajax_referer( 'easymedia-sort-nonce', 'security' );
+
+    // Check user capability
+    if ( ! current_user_can( 'edit_posts' ) ) {
+        wp_die( -1, 403 );
+    }
+
+    if ( ! isset( $_POST['order'] ) ) {
+        wp_die( 0, 400 );
+    }
+
     global $wpdb;
 
-    $order   = explode( ',', $_POST['order'] );
-    $counter = 0;
+    $raw_order = sanitize_text_field( wp_unslash( $_POST['order'] ) );
+    $order     = ! empty( $raw_order ) ? explode( ',', $raw_order ) : array();
+    $counter   = 0;
 
     foreach ( $order as $easymedia_id ) {
-        $wpdb->update( $wpdb->posts, array( 'menu_order' => $counter ), array( 'ID' => $easymedia_id ) );
-        $counter++;
+        $id = absint( $easymedia_id );
+        if ( $id > 0 ) {
+            $wpdb->update( $wpdb->posts, array( 'menu_order' => $counter ), array( 'ID' => $id ) );
+            $counter++;
+        }
     }
 
     echo 1;
-    die();
+    wp_die();
 }
 
 function easmedia_print_sort_scripts()
 {
     wp_enqueue_script( 'jquery-ui-sortable' );
-    wp_enqueue_script( 'easmedia_easymedia_sort', plugins_url( 'includes/js/func/easymedia_sort.js', __FILE__ ) );
+    wp_enqueue_script( 'easmedia_easymedia_sort', plugins_url( 'includes/js/func/easymedia_sort.js', __FILE__ ), array( 'jquery', 'jquery-ui-sortable' ), false, true );
+    wp_localize_script(
+        'easmedia_easymedia_sort',
+        'easymedia_sort_vars',
+        array(
+            'nonce'     => wp_create_nonce( 'easymedia-sort-nonce' ),
+            'error_msg' => __( 'There was an error saving the update.', 'easy-media-gallery' ),
+        )
+    );
 }
 
 function easmedia_print_sort_styles()
@@ -538,7 +570,7 @@ function easmedia_show_order_column( $name )
         case 'emg_menu_order':
 
             $order = $post->menu_order;
-            echo $order;
+            echo absint( $order );
             break;
         default:
             break;

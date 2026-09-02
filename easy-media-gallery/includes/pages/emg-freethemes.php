@@ -46,7 +46,7 @@ function emg_lite_free_themes() {
 			echo '</div></div>';
 			echo '<div class="theme-details-footer">';
 			echo '<span class="theme-details-ratings"><span class="dashicons dashicons-star-filled rating-color"></span></span><span class="rating-content">'.esc_html( $details->rating ).'% <span style="font-style:italic;">( '.esc_html( $details->num_ratings ).' likes )</span></span>';
-			echo '<span class="theme-details-actions">'.( get_template() != $details->slug && ! emg_get_installed_themes( $details->slug ) ? '<a class="button-secondary" href="'.esc_url( $details->preview_url ).'" target="_blank">' . esc_html__( 'Preview', 'easy-media-gallery' ) . '</a>' : '' ).''.emg_generate_action_button( $details->slug ).'</span>';
+			echo '<span class="theme-details-actions">' . ( get_template() != $details->slug && ! emg_get_installed_themes( $details->slug ) ? '<a class="button-secondary" href="' . esc_url( $details->preview_url ) . '" target="_blank">' . esc_html__( 'Preview', 'easy-media-gallery' ) . '</a>' : '' ) . wp_kses_post( emg_generate_action_button( $details->slug ) ) . '</span>';
 			echo '</div>';
 			echo '</li>';
 			

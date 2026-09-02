@@ -1,5 +1,6 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 /*
 -----------------------------------------------------------------------------------*/
@@ -9,9 +10,9 @@
 function emg_customposttype_image_box() {
 	remove_meta_box( 'postimagediv', 'easymediagallery', 'side' );
 	remove_meta_box( 'emediagallerydiv', 'easymediagallery', 'side' );
-	add_meta_box( 'categorydiv', __( 'Media Categories' ), 'easymediagallery_categories_meta_box', 'easymediagallery', 'normal', 'high' );
-	add_meta_box( 'emgdemodiv', __( 'AMAZING Pro Version DEMO' ), 'emg_prodemo_metabox', 'easymediagallery', 'side', 'default' );
-	add_meta_box( 'emgbuydiv', __( 'Premium Plugin' ), 'emg_upgrade_metabox', 'easymediagallery', 'side', 'default' );
+	add_meta_box( 'categorydiv', __( 'Media Categories', 'easy-media-gallery' ), 'easymediagallery_categories_meta_box', 'easymediagallery', 'normal', 'high' );
+	add_meta_box( 'emgdemodiv', __( 'AMAZING Pro Version DEMO', 'easy-media-gallery' ), 'emg_prodemo_metabox', 'easymediagallery', 'side', 'default' );
+	add_meta_box( 'emgbuydiv', __( 'Premium Plugin', 'easy-media-gallery' ), 'emg_upgrade_metabox', 'easymediagallery', 'side', 'default' );
 }
 add_action( 'do_meta_boxes', 'emg_customposttype_image_box' );
 
@@ -107,7 +108,7 @@ if ( strstr( $_SERVER['REQUEST_URI'], 'wp-admin/post-new.php' ) || strstr( $_SER
                                 Pro
                             </li>
                             <li class="plan-price">
-                                <strong>$<?php echo EASYMEDIA_PRO_PRICE; ?></strong>
+                                <strong>$<?php echo esc_html( EASYMEDIA_PRO_PRICE ); ?></strong>
                             </li>
                             <li>
                                 <strong>1 site</strong>
@@ -124,7 +125,7 @@ if ( strstr( $_SERVER['REQUEST_URI'], 'wp-admin/post-new.php' ) || strstr( $_SER
                                 Pro+
                             </li>
                             <li class="plan-price">
-                                <strong>$<?php echo EASYMEDIA_PRICE; ?></strong>
+                                <strong>$<?php echo esc_html( EASYMEDIA_PRICE ); ?></strong>
                             </li>
                             <li>
                                 <strong>3 sites</strong>
@@ -142,7 +143,7 @@ if ( strstr( $_SERVER['REQUEST_URI'], 'wp-admin/post-new.php' ) || strstr( $_SER
                                 Pro++
                             </li>
                             <li class="plan-price">
-                                <strong>$<?php echo EASYMEDIA_PLUS_PRICE; ?></strong>
+                                <strong>$<?php echo esc_html( EASYMEDIA_PLUS_PRICE ); ?></strong>
                             </li>
                             <li>
                                 <strong>5 sites</strong>
@@ -160,7 +161,7 @@ if ( strstr( $_SERVER['REQUEST_URI'], 'wp-admin/post-new.php' ) || strstr( $_SER
                                 Developer
                             </li>
                             <li class="plan-price">
-                                <strong>$<?php echo EASYMEDIA_DEV_PRICE; ?></strong>
+                                <strong>$<?php echo esc_html( EASYMEDIA_DEV_PRICE ); ?></strong>
                             </li>
                             <li>
                                 <strong>15 sites</strong>
@@ -306,9 +307,9 @@ jQuery(document).ready(function($) {
     // -------- DELETE MEDIA IMAGE (AJAX)
     function easmedia_img_media_remv(type) {
         var data = {
-            security: '<?php echo wp_create_nonce( 'easymedia-remove' ); ?>',
+            security: '<?php echo esc_js( wp_create_nonce( 'easymedia-remove' ) ); ?>',
             action: 'easmedia_img_media_remv',
-            pstid: '<?php echo get_the_ID(); ?>',
+            pstid: '<?php echo absint( get_the_ID() ); ?>',
             type: type
         };
 
@@ -375,7 +376,7 @@ function IsValidAuUrl1(aurl1) {
                 mp3: aurl1
             });
         },
-        swfPath: "<?php echo plugins_url( 'swf/', __FILE__ ); ?>",
+        swfPath: "<?php echo esc_url( plugins_url( 'swf/', __FILE__ ) ); ?>",
         supplied: "mp3",
         volume: 100,
         wmode: "window"
@@ -426,7 +427,7 @@ function IsValidImageUrl(url) {
 
             var data = {
                 action: 'easymedia_imgresize_ajax',
-                security: '<?php echo wp_create_nonce( 'easymedia-thumb' ); ?>',
+                security: '<?php echo esc_js( wp_create_nonce( 'easymedia-thumb' ) ); ?>',
                 imgurl: jQuery("#upload_image").val(),
                 limiter: '210'
             };
@@ -466,13 +467,9 @@ function easmedia_add_meta_box( $meta_box ) {
 	}
 
 	// Create a callback function
-	if ( EMG_PHP7 ) {
-		$callback = function ( $post, $meta_box ) {
-			return easmedia_create_meta_box( $post, $meta_box['args'] );
-		};
-	} else {
-		$callback = create_function( '$post, $meta_box', 'easmedia_create_meta_box( $post, $meta_box["args"] );' );
-	}
+	$callback = function ( $post, $meta_box ) {
+		return easmedia_create_meta_box( $post, $meta_box['args'] );
+	};
 
 	add_meta_box( $meta_box['id'], $meta_box['title'], $callback, $meta_box['page'], $meta_box['context'], $meta_box['priority'], $meta_box );
 }
@@ -500,7 +497,7 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 	}
 
 	if ( isset( $meta_box['description'] ) && $meta_box['description'] != '' ) {
-		echo '<p>' . $meta_box['description'] . '</p>';
+		echo '<p>' . wp_kses_post( $meta_box['description'] ) . '</p>';
 	}
 
 	wp_nonce_field( basename( __FILE__ ), 'easmedia_meta_box_nonce' );
@@ -509,19 +506,19 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 	foreach ( $meta_box['fields'] as $field ) {
 		// Get current post meta data
 		$meta = get_post_meta( $post->ID, $field['id'], true );
-		echo '<tr class="' . $field['id'] . '"><th><label for="' . $field['id'] . '"><strong>' . $field['name'] . ' ' . ( $field['defflimit'] == '1' ? '<br>(Default limit : ' . easy_get_option( 'easymedia_img_size_limit' ) . 'px)' : '' ) . '</strong>
-			  <span>' . $field['desc'] . '</span></label></th>';
+		echo '<tr class="' . esc_attr( $field['id'] ) . '"><th><label for="' . esc_attr( $field['id'] ) . '"><strong>' . esc_html( $field['name'] ) . ' ' . ( $field['defflimit'] == '1' ? '<br>(Default limit : ' . esc_html( easy_get_option( 'easymedia_img_size_limit' ) ) . 'px)' : '' ) . '</strong>
+			  <span>' . wp_kses_post( $field['desc'] ) . '</span></label></th>';
 
 		switch ( $field['type'] ) {
 			case 'text':
-				echo '<td><input type="text" name="easmedia_meta[' . $field['id'] . ']" id="' . $field['id'] . '" value="' . ( $meta ? $meta : $field['std'] ) . '" size="30" /></td>';
+				echo '<td><input type="text" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" id="' . esc_attr( $field['id'] ) . '" value="' . esc_attr( $meta ? $meta : $field['std'] ) . '" size="30" /></td>';
 				break;
 
 			case 'video':
 				echo '				<div id="videofrmt" style="text-decoration:underline;font-weight:bold;cursor:Pointer; color:#1A91F2 !important; margin-bottom:8px;">Sample video format</div>
 				<div class="messivideo" data-yvid="https://www.youtube.com/embed/htxwZw_aPF0?rel=0&amp;showinfo=0" style="margin-bottom:8px;">Video Tutorial</div><td>				
 				
-				<input type="text" name="easmedia_meta[' . $field['id'] . ']" id="' . $field['id'] . '" value="' . ( $meta ? $meta : $field['std'] ) . '" size="30" />
+				<input type="text" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" id="' . esc_attr( $field['id'] ) . '" value="' . esc_attr( $meta ? $meta : $field['std'] ) . '" size="30" />
 				<div style="color:red; display:none;" id="emgvideopreview"></div>				
 				<div class="videobox" id="" style="display:none;">
 				<span class="roll" ></span>
@@ -550,10 +547,10 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 					}
 				}
 
-				echo '<div class="messivideo" data-yvid="https://www.youtube.com/embed/dXFBNY5t6E8?rel=0&amp;showinfo=0" style="margin-bottom:8px;">Video Tutorial</div><td id="imgupld"><input id="upload_image" type="text" name="easmedia_meta[' . $field['id'] . ']" value="' . ( $meta ? $meta : $field['std'] ) . '" style="margin-bottom:5px;"/><div style="color:red;" id="notifynovalidimg"></div>
-<div class="addmed"><a rel="image-' . $emgepver . '" class="' . $uploaderclass . '" title="Add Media" ' . $isdatacnt . ' href="' . $emghref . '"><span class="emg-media-buttons-icon"></span>Add Media</a>
-<a onClick="return false;" style="' . $dsplynone . ';" class="deleteimage button" title="Delete Image" href="#"><span class="emg-media-buttons-icon-del"></span>Delete Image</a></div><div style="' . $dsplynone . ' width:' . $curimgpth[1] . 'px; height:' . $curimgpth[2] . 'px" id="imgpreviewbox" class="imgpreviewboxc">
-<img id="imgthumbnailprv" src="' . $curimgpth[0] . '"/></div>
+				echo '<div class="messivideo" data-yvid="https://www.youtube.com/embed/dXFBNY5t6E8?rel=0&amp;showinfo=0" style="margin-bottom:8px;">Video Tutorial</div><td id="imgupld"><input id="upload_image" type="text" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="' . esc_attr( $meta ? $meta : $field['std'] ) . '" style="margin-bottom:5px;"/><div style="color:red;" id="notifynovalidimg"></div>
+<div class="addmed"><a rel="image-' . esc_attr( $emgepver ) . '" class="' . esc_attr( $uploaderclass ) . '" title="Add Media" ' . esc_attr( $isdatacnt ) . ' href="' . esc_url( $emghref ) . '"><span class="emg-media-buttons-icon"></span>Add Media</a>
+<a onClick="return false;" style="' . esc_attr( $dsplynone ) . ';" class="deleteimage button" title="Delete Image" href="#"><span class="emg-media-buttons-icon-del"></span>Delete Image</a></div><div style="' . esc_attr( $dsplynone ) . ' width:' . esc_attr( $curimgpth[1] ) . 'px; height:' . esc_attr( $curimgpth[2] ) . 'px" id="imgpreviewbox" class="imgpreviewboxc">
+<img id="imgthumbnailprv" src="' . esc_url( $curimgpth[0] ) . '"/></div>
 </td>';
 				break;
 
@@ -566,16 +563,16 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 					echo '
 <script type="text/javascript">
     jQuery(function () {
-		var thisaudiourl = "' . $curaudiopth . '";
+		var thisaudiourl = "' . esc_url( $curaudiopth ) . '";
     IsValidAuUrl1(thisaudiourl);
     });
     </script>	
 '; }
 
-				echo '<div class="messivideo" data-yvid="https://www.youtube.com/embed/Bsn-CB5Hpbw?rel=0&amp;showinfo=0" style="margin-bottom:8px;">Video Tutorial</div><td id="audioupld"><input id="upload_audio" type="text" name="easmedia_meta[' . $field['id'] . ']" value="' . ( $meta ? $meta : $field['std'] ) . '" style="margin-bottom:5px;"/><div style="color:red;" id="notifynovalidaudio"></div><div class="addmed"><a rel="audio-' . $emgepver . '" class="' . $uploaderclass . '" title="Add Media" ' . $isdatacnt . ' href="' . $emghref . '"><span class="emg-media-buttons-icon"></span>Add Media</a>
-<a onClick="return false;" style="' . $adsplynone . ';" class="deleteaudio button" title="Delete Audio" href="#"><span class="emg-media-buttons-icon-del"></span>Delete Audio</a></div>
+				echo '<div class="messivideo" data-yvid="https://www.youtube.com/embed/Bsn-CB5Hpbw?rel=0&amp;showinfo=0" style="margin-bottom:8px;">Video Tutorial</div><td id="audioupld"><input id="upload_audio" type="text" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="' . esc_attr( $meta ? $meta : $field['std'] ) . '" style="margin-bottom:5px;"/><div style="color:red;" id="notifynovalidaudio"></div><div class="addmed"><a rel="audio-' . esc_attr( $emgepver ) . '" class="' . esc_attr( $uploaderclass ) . '" title="Add Media" ' . esc_attr( $isdatacnt ) . ' href="' . esc_url( $emghref ) . '"><span class="emg-media-buttons-icon"></span>Add Media</a>
+<a onClick="return false;" style="' . esc_attr( $adsplynone ) . ';" class="deleteaudio button" title="Delete Audio" href="#"><span class="emg-media-buttons-icon-del"></span>Delete Audio</a></div>
 
-<div style="' . $adsplynone . ';" id="audioprev" class="vidpreviewboxc">
+<div style="' . esc_attr( $adsplynone ) . ';" id="audioprev" class="vidpreviewboxc">
 	<div id="jquery_jplayer_1" class="jp-jplayer"></div>
 		<div id="jp_container_1" class="jp-audio">
 			<div class="jp-type-single">
@@ -612,15 +609,15 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 
 			case 'select':
 				echo '<div class="emginfobox emg_dl_pro_trial">Try Pro Version Directly from Your Site 100% free!<br><a href="https://trial.ghozylab.com/?product=easy-media-gallery-pro" target="_blank">Download Now</a></div>';
-				echo '<td><select style="width:200px;" name="easmedia_meta[' . $field['id'] . ']" id="' . $field['id'] . '">';
+				echo '<td><select style="width:200px;" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" id="' . esc_attr( $field['id'] ) . '">';
 				foreach ( $field['options'] as $key => $option ) {
-					echo '<option value="' . $option . '"';
+					echo '<option value="' . esc_attr( $option ) . '"';
 					if ( $meta ) {
 						if ( $meta == $option ) {
 							echo ' selected="selected"';
 						}
 					}
-					echo '>' . $option . '</option>';
+					echo '>' . esc_html( $option ) . '</option>';
 				}
 				echo '</select></td>';
 				break;
@@ -628,7 +625,7 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 			case 'radio':
 				echo '<td>';
 				foreach ( $field['options'] as $key => $option ) {
-					echo '<label class="radio-label"><input type="radio" name="easmedia_meta[' . $field['id'] . ']" value="' . $key . '" class="radio"';
+					echo '<label class="radio-label"><input type="radio" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="' . esc_attr( $key ) . '" class="radio"';
 					if ( $meta ) {
 						if ( $meta == $key ) {
 							echo ' checked="checked"';
@@ -636,66 +633,52 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 					} elseif ( $field['std'] == $key ) {
 							echo ' checked="checked"';
 					}
-					echo ' /> ' . $option . '</label> ';
+					echo ' /> ' . esc_html( $option ) . '</label> ';
 				}
 				echo '</td>';
 				break;
 
 			case 'color':
+				$val = '';
 				if ( array_key_exists( 'val', $field ) ) {
-					$val = ' value="' . $field['val'] . '"';
+					$val = $field['val'];
 				}
 				if ( $meta ) {
-					$val = ' value="' . $meta . '"';
+					$val = $meta;
 				}
 				echo '<td>';
 				echo '<div class="colorpicker-wrapper">';
-				echo '<input type="text" id="' . $field['id'] . '_cp" name="easmedia_meta[' . $field['id'] . ']"' . $val . ' />';
-				echo '<div id="' . $field['id'] . '" class="colorpicker"></div>';
+				echo '<input type="text" id="' . esc_attr( $field['id'] ) . '_cp" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="' . esc_attr( $val ) . '" />';
+				echo '<div id="' . esc_attr( $field['id'] ) . '" class="colorpicker"></div>';
 				echo '</div>';
 				echo '</td>';
 				break;
 
 			case 'checkbox':
 				echo '<td>';
-				$val = '';
-				if ( $meta ) {
-					if ( $meta == 'on' ) {
-						$val = ' checked="checked"';
-					}
-				} elseif ( $field['std'] == 'on' ) {
-						$val = ' checked="checked"';
-				}
+				$is_checked = ( $meta ) ? ( $meta == 'on' ) : ( isset( $field['std'] ) && $field['std'] == 'on' );
 
-				echo '<input type="hidden" name="easmedia_meta[' . $field['id'] . ']" value="off" />
-                <input class="switch" type="checkbox" id="' . $field['id'] . '" name="easmedia_meta[' . $field['id'] . ']" value="on"' . $val . ' /> ';
+				echo '<input type="hidden" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="off" />
+                <input class="switch" type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="on"' . checked( $is_checked, true, false ) . ' /> ';
 				echo '</td>';
 				break;
 
 			case 'checkboxoptdef':
 				echo '<td>';
-				$val = '';
-				if ( $meta ) {
-					if ( $meta == 'on' ) {
-						$val = ' checked="checked"';
-					}
-				} elseif ( $field['std'] == 'on' ) {
+				$is_checked = ( $meta ) ? ( $meta == 'on' ) : ( isset( $field['std'] ) && $field['std'] == 'on' );
 
-						$val = ' checked="checked"';
-				}
-
-				echo '<div style="margin-bottom:15px !important;"><input type="hidden" name="easmedia_meta[' . $field['id'] . ']" value="off" />
-                <input class="switch" type="checkbox" id="' . $field['id'] . '" name="easmedia_meta[' . $field['id'] . ']" value="on" ' . $val . ' /></div>
+				echo '<div style="margin-bottom:15px !important;"><input type="hidden" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="off" />
+                <input class="switch" type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="on"' . checked( $is_checked, true, false ) . ' /></div>
 				';
 				echo '</td>';
 				break;
 
 			case 'checkboxopt':
 				echo '<td>';
-				$val = '';
+				$is_checked = false;
 				if ( $meta ) {
 					if ( $meta == 'on' ) {
-						$val = ' checked="checked"';
+						$is_checked = true;
 
 						echo '<script type="text/javascript">
     jQuery(function () {
@@ -716,8 +699,8 @@ function easmedia_create_meta_box( $post, $meta_box ) {
     });
     </script>';
 
-					if ( $field['std'] == 'on' ) {
-						$val = ' checked="checked"';
+					if ( isset( $field['std'] ) && $field['std'] == 'on' ) {
+						$is_checked = true;
 
 						echo '<script type="text/javascript">
     jQuery(function () {
@@ -733,14 +716,14 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 					}
 				}
 
-				echo '<div style="margin-bottom:15px !important;"><input type="hidden" name="easmedia_meta[' . $field['id'] . ']" value="off" />
-                <input class="switch" type="checkbox" id="' . $field['id'] . '" name="easmedia_meta[' . $field['id'] . ']" value="on" ' . $val . ' /></div>
+				echo '<div style="margin-bottom:15px !important;"><input type="hidden" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="off" />
+                <input class="switch" type="checkbox" id="' . esc_attr( $field['id'] ) . '" name="easmedia_meta[' . esc_attr( $field['id'] ) . ']" value="on"' . checked( $is_checked, true, false ) . ' /></div>
 			<div id="vidcustomsize" style="border-top: 1px solid #ccc; padding-top: 10px;">
-				 	Video custom size : <div style="margin-top:10px; margin-bottom:10px;"><strong>Width</strong> <input style="margin-right:5px !important; margin-left:3px; width:43px !important; float:none !important;" name="easmedia_meta[' . $field['id'] . '_' . $field['width'] . ']" id="' . $field['id'] . '[width]" type="text" value="' . get_post_meta( $post->ID, 'easmedia_metabox_media_video_size_' . $field['width'] . '', true ) . '" />  ' . $field['pixopr'] . '
+				 	Video custom size : <div style="margin-top:10px; margin-bottom:10px;"><strong>Width</strong> <input style="margin-right:5px !important; margin-left:3px; width:43px !important; float:none !important;" name="easmedia_meta[' . esc_attr( $field['id'] . '_' . $field['width'] ) . ']" id="' . esc_attr( $field['id'] . '[width]' ) . '" type="text" value="' . esc_attr( get_post_meta( $post->ID, 'easmedia_metabox_media_video_size_' . $field['width'], true ) ) . '" />  ' . esc_html( $field['pixopr'] ) . '
 
 <span style="border-right:solid 1px #CCC;margin-left:9px; margin-right:10px !important; "></span>
 
- 	<strong>Height</strong> <input style="margin-left:3px; margin-right:5px !important; width:43px !important; float:none !important;" name="easmedia_meta[' . $field['id'] . '_' . $field['height'] . ']" id="' . $field['id'] . '[height]" type="text" value="' . get_post_meta( $post->ID, 'easmedia_metabox_media_video_size_' . $field['height'] . '', true ) . '" /> ' . $field['pixopr'] . ' </div></div>
+ 	<strong>Height</strong> <input style="margin-left:3px; margin-right:5px !important; width:43px !important; float:none !important;" name="easmedia_meta[' . esc_attr( $field['id'] . '_' . $field['height'] ) . ']" id="' . esc_attr( $field['id'] . '[height]' ) . '" type="text" value="' . esc_attr( get_post_meta( $post->ID, 'easmedia_metabox_media_video_size_' . $field['height'], true ) ) . '" /> ' . esc_html( $field['pixopr'] ) . ' </div></div>
 
 				';
 				echo '</td>';
@@ -758,9 +741,9 @@ function easmedia_create_meta_box( $post, $meta_box ) {
 						$img_url  = wp_get_attachment_thumb_url( $img_id );
 
 						echo '
-						<li class="emgthumbhandler" data-attachment_id="' . $img_id . '">
-							<input type="hidden" name="easmedia_meta[easmedia_metabox_media_gallery][]" value="' . $img_id . '" />
-							<img src="' . $img_url . '" />
+						<li class="emgthumbhandler" data-attachment_id="' . absint( $img_id ) . '">
+							<input type="hidden" name="easmedia_meta[easmedia_metabox_media_gallery][]" value="' . absint( $img_id ) . '" />
+							<img src="' . esc_url( $img_url ) . '" />
 							<span class="emg-del-images"></span>
 							
 						</li>';

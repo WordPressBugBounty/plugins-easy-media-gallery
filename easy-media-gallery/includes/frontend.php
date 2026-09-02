@@ -1,5 +1,6 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 /*
 |--------------------------------------------------------------------------
@@ -7,9 +8,10 @@
 |--------------------------------------------------------------------------
 */
 function easymedia_frontend_stylesheet() {
-	        wp_enqueue_style( 'easymedia_styles', EASYMEDG_PLUGIN_URL .'css/frontend.css' );
+	wp_enqueue_style( 'easymedia_styles', EASYMEDG_PLUGIN_URL . 'css/frontend.css', array(), EASYMEDIA_VERSION );
+	wp_enqueue_style( 'easymedia_lightbox_style', EASYMEDG_PLUGIN_URL . 'css/styles/mediabox/Light.css', array(), EASYMEDIA_VERSION );
 }
-add_action( 'wp_print_styles', 'easymedia_frontend_stylesheet' );
+add_action( 'wp_enqueue_scripts', 'easymedia_frontend_stylesheet' );
 
 
 function easymedia_frontend_script() {	
@@ -23,55 +25,32 @@ function easymedia_frontend_script() {
 	( easy_get_option( 'easymedia_disen_rclick' ) == '1' ) ? $disenrclck = 'true' : $disenrclck = 'false';	
 			
 	$eparams = array(
-		'nblaswf' => plugins_url( '/swf/NonverBlaster.swf' , __FILE__ ),
-  		'audiovol' => easy_get_option( 'easymedia_audio_vol' ),
-  		'audioautoplay' => $audautoplay,
-  		'audioloop' => $audioloop,
-  		'vidautopa' => $autoplaya,
-  		'vidautopb' => $autoplayb,  
-  		'vidautopc' => $autoplayc, 
-		'vidautopd' => $autoplayd,	
-		'drclick' => $disenrclck,
-		'ajaxcid' => easy_get_option( 'easymedia_ajax_con_id' ),					
-  		'ajaxpth' => admin_url('admin-ajax.php'),  // @since 1.2.9.5
-		'ajaxnonce' => wp_create_nonce( 'medialoader' ), // @since 1.3.29	
-  		'ovrlayop' => easy_get_option( 'easymedia_overlay_opcty' ) / 100,   
-		);
+		'nblaswf'       => plugins_url( '/swf/NonverBlaster.swf', __FILE__ ),
+		'audiovol'      => easy_get_option( 'easymedia_audio_vol' ),
+		'audioautoplay' => $audautoplay,
+		'audioloop'     => $audioloop,
+		'vidautopa'     => $autoplaya,
+		'vidautopb'     => $autoplayb,  
+		'vidautopc'     => $autoplayc, 
+		'vidautopd'     => $autoplayd,	
+		'drclick'       => $disenrclck,
+		'ajaxcid'       => easy_get_option( 'easymedia_ajax_con_id' ),					
+		'ajaxpth'       => admin_url( 'admin-ajax.php' ),
+		'ajaxnonce'     => wp_create_nonce( 'medialoader' ),
+		'ovrlayop'      => floatval( easy_get_option( 'easymedia_overlay_opcty' ) ) / 100,   
+	);
 
-	wp_localize_script( 'easymedia-core', 'EasyLite', $eparams );		
-	
+	wp_localize_script( 'easymedia-core', 'EasyLite', $eparams );
+
+	// Enqueue HTML5 shim only on legacy WordPress (< 6.9) where conditional comments are supported
+	global $wp_version;
+	if ( version_compare( $wp_version, '6.9', '<' ) ) {
+		wp_enqueue_script( 'easymedia-html5-shiv', plugins_url( 'js/func/html5.js', __FILE__ ), array(), EASYMEDIA_VERSION );
+		wp_script_add_data( 'easymedia-html5-shiv', 'conditional', 'lt IE 9' );
+	}
+
+	// Attach inline script to ensure da-thumbs rel attribute
+	$inline_rel_script = 'jQuery(document).ready(function($) { var add = "easymedia"; jQuery(\'.da-thumbs a[rel!="easymedia"]\').attr(\'rel\', function (i, old) { return old ? old + \' \' + add : add; }); });';
+	wp_add_inline_script( 'easymedia-core', $inline_rel_script );
 }
 add_action( 'wp_enqueue_scripts', 'easymedia_frontend_script' );
-
-
-function easymedia_frontend_prop()
-{   
-		$boxstyle = EASYMEDG_PLUGIN_URL . 'css/styles/mediabox';
-		echo "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen,projection\" href=\"$boxstyle/Light.css\" />\n";
-		
-ob_start(); ?>
-
-<!-- Easy Media Gallery Lite START (version <?php echo EASYMEDIA_VERSION; ?>)-->       
-    
-    <script type="text/javascript">
-	/*<![CDATA[*/
-	/* Easy Media Gallery */
-    jQuery(document).ready(function($) {	
-		var add = "easymedia";
-jQuery('.da-thumbs a[rel!="easymedia"]').attr('rel', function (i, old) {
-    return old ? old + ' ' + add : add; });		
-    });
-    /*]]>*/</script>
-
-    <!--[if lt IE 9]>
-<script src="<?php echo plugins_url( 'js/func/html5.js' , __FILE__ );  ?>" type="text/javascript"></script>
-<![endif]-->  
-
-
-<!-- Easy Media Gallery Lite  END  -->   
-    
-	<?php echo ob_get_clean();		
-}
-add_action( 'wp_head', 'easymedia_frontend_prop' );
-
-?>

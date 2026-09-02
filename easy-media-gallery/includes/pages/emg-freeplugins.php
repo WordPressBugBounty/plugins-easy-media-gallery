@@ -92,7 +92,7 @@ color: #FFF !important;
 	background: none repeat scroll 0% 0% #DA3232 !important;
 }
 
-.most_popular {top: -5px;position: absolute;width: 115px;height: 85px;background: transparent url("<?php echo EASYMEDG_PLUGIN_URL;?>includes/images/most_popular.png") no-repeat scroll left top;right: -5px;}
+.most_popular {top: -5px;position: absolute;width: 115px;height: 85px;background: transparent url("<?php echo esc_url( EASYMEDG_PLUGIN_URL ); ?>includes/images/most_popular.png") no-repeat scroll left top;right: -5px;}
 
 .drop-shadow {
     position:relative;
@@ -141,8 +141,38 @@ color: #FFF !important;
             transform:rotate(3deg);
 }
 
+.emg-container-cnt .wp-list-table.plugin-install {
+	border: none !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.wp-list-table.plugin-install #the-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
 .emg-container-cnt .plugin-card {
-    border: 1px solid #d7d7d7 !important;
+	border: 1px solid #d7d7d7 !important;
+	width: calc((100% - 40px) / 3) !important;
+	max-width: calc((100% - 40px) / 3) !important;
+	margin: 0 0 30px 0 !important;
+	box-sizing: border-box !important;
+	display: flex !important;
+	flex-direction: column !important;
+	justify-content: space-between !important;
+	float: none !important;
+	clear: none !important;
+}
+
+.emg-container-cnt .plugin-card-top {
+	flex: 1 0 auto;
+}
+
+.emg-container-cnt .plugin-card-top .emg-freep-icon img {
+	width: 80px !important;
+	height: 80px !important;
 }
 
 .emg-container-cnt .plugin-card-bottom {
@@ -159,13 +189,41 @@ body.rtl .emg-freep-icon {
 	right: auto;	
 }
 
+.emg-container-cnt .plugin-card-top .column-name,
 .emg-container-cnt .plugin-card-top .column-description {
-	margin-left: 140px !important;
+	margin-left: 95px !important;
 }
 
+body.rtl .emg-container-cnt .plugin-card-top .column-name,
 body.rtl .emg-container-cnt .plugin-card-top .column-description {
-	margin-right: 140px !important;
-	margin-left: auto;
+	margin-right: 95px !important;
+	margin-left: auto !important;
+}
+
+@media screen and (max-width: 1200px) {
+	.emg-container-cnt .plugin-card {
+		width: calc((100% - 20px) / 2) !important;
+		max-width: calc((100% - 20px) / 2) !important;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.wp-list-table.plugin-install #the-list {
+		gap: 0;
+	}
+	.emg-container-cnt .plugin-card {
+		width: 100% !important;
+		max-width: 100% !important;
+		margin-bottom: 25px !important;
+	}
+	.emg-container-cnt .plugin-card-top .column-name,
+	.emg-container-cnt .plugin-card-top .column-description {
+		margin-left: 140px !important;
+	}
+	.emg-container-cnt .plugin-card-top .emg-freep-icon img {
+		width: 128px !important;
+		height: 128px !important;
+	}
 }
 		
         </style>
@@ -179,14 +237,15 @@ body.rtl .emg-container-cnt .plugin-card-top .column-description {
 			
 			$title = wp_kses( $plugin['name'], $plugins_allowedtags );
 			// Remove any HTML from the description.
-			$description = strip_tags( $plugin['short_description'] );
+			$description = wp_strip_all_tags( $plugin['short_description'] );
 			$version = wp_kses( $plugin['version'], $plugins_allowedtags );
 
-			$name = strip_tags( $title . ' ' . $version );
+			$name = wp_strip_all_tags( $title . ' ' . $version );
 
 			$author = wp_kses( $plugin['author'], $plugins_allowedtags );
 			if ( ! empty( $author ) ) {
-				$author = ' <cite>' . sprintf( __( 'By %s' ), $author ) . '</cite>';
+				/* translators: %s: Author name */
+				$author = ' <cite>' . sprintf( __( 'By %s', 'easy-media-gallery' ), $author ) . '</cite>';
 			}
 
 			$action_links = array();
@@ -197,21 +256,21 @@ body.rtl .emg-container-cnt .plugin-card-top .column-description {
 				switch ( $status['status'] ) {
 					case 'install':
 						if ( $status['url'] ) {
-							/* translators: 1: Plugin name and version. */
-							$action_links[] = '<a class="install-now button-secondary emg-button-install" href="' . $status['url'] . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '">' . __( 'Install Now' ) . '</a>';
+							/* translators: %s: Plugin name and version. */
+							$action_links[] = '<a class="install-now button-secondary emg-button-install" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now', 'easy-media-gallery' ), $name ) ) . '">' . __( 'Install Now', 'easy-media-gallery' ) . '</a>';
 						}
 
 						break;
 					case 'update_available':
 						if ( $status['url'] ) {
-							/* translators: 1: Plugin name and version */
-							$action_links[] = '<a class="button emg-button-update" href="' . $status['url'] . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now' ), $name ) ) . '">' . __( 'Update Now' ) . '</a>';
+							/* translators: %s: Plugin name and version */
+							$action_links[] = '<a class="button emg-button-update" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now', 'easy-media-gallery' ), $name ) ) . '">' . __( 'Update Now', 'easy-media-gallery' ) . '</a>';
 						}
 
 						break;
 					case 'latest_installed':
 					case 'newer_installed':
-						$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin' ) . '</span>';
+						$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date', 'easy-media-gallery' ) . ' ">' . _x( 'Installed', 'plugin', 'easy-media-gallery' ) . '</span>';
 						break;
 				}
 			}
@@ -219,8 +278,8 @@ body.rtl .emg-container-cnt .plugin-card-top .column-description {
 			$details_link   = self_admin_url( 'plugin-install.php?tab=plugin-information&amp;plugin=' . $plugin['slug'] .
 								'&amp;TB_iframe=true&amp;width=750&amp;height=550' );
 
-			/* translators: 1: Plugin name and version. */
-			$action_links[] = '<a href="' . esc_url( $details_link ) . '" class="thickbox" aria-label="' . esc_attr( sprintf( __( 'More information about %s' ), $name ) ) . '" data-title="' . esc_attr( $name ) . '">' . __( 'More Details' ) . '</a>';
+			/* translators: %s: Plugin name and version. */
+			$action_links[] = '<a href="' . esc_url( $details_link ) . '" class="thickbox" aria-label="' . esc_attr( sprintf( __( 'More information about %s', 'easy-media-gallery' ), $name ) ) . '" data-title="' . esc_attr( $name ) . '">' . __( 'More Details', 'easy-media-gallery' ) . '</a>';
 
 			if ( !empty( $plugin['icons']['svg'] ) ) {
 				$plugin_icon_url = $plugin['icons']['svg'];
@@ -242,23 +301,23 @@ body.rtl .emg-container-cnt .plugin-card-top .column-description {
 			 */
 			$action_links = apply_filters( 'plugin_install_action_links', $action_links, $plugin );
 		?>
-		<div id="<?php echo $plugin["slug"]; ?>" class="plugin-card drop-shadow lifted">
+		<div id="<?php echo esc_attr( $plugin["slug"] ); ?>" class="plugin-card drop-shadow lifted">
 			<div class="plugin-card-top" style="min-height: 160px !important;">
             <?php if ( isset( $plugin["slug"] ) && $plugin["slug"] == 'image-slider-widget' ) {echo '<div class="most_popular"></div>';} ?>
 				<a href="<?php echo esc_url( $details_link ); ?>" class="emg-freep-icon thickbox plugin-icon"><img width="128" height="128" src="<?php echo esc_attr( $plugin_icon_url ) ?>" /></a>
 				<div class="name column-name" style="margin-right: 20px !important;">
-					<h4><a href="<?php echo esc_url( $details_link ); ?>" class="thickbox"><?php echo $title; ?></a></h4>
+					<h4><a href="<?php echo esc_url( $details_link ); ?>" class="thickbox"><?php echo esc_html( $title ); ?></a></h4>
 				</div>
 				<div class="desc column-description" style="margin-right: 20px !important;">
-					<p><?php echo $description; ?></p>
-					<p class="authors"><?php echo $author; ?></p>			
+					<p><?php echo esc_html( $description ); ?></p>
+					<p class="authors"><?php echo wp_kses_post( $author ); ?></p>			
 				</div>
 			</div>
 					<div class="emg-button-con">
 					<?php
 						if ( $action_links ) {
 							echo '<ul class="emg-plugin-action-buttons">';
-							echo '<li>' . $action_links[0] . '</li>';
+							echo '<li>' . wp_kses_post( $action_links[0] ) . '</li>';
 							
 							switch( $plugin["slug"] ){
 								case "easy-media-gallery" :
@@ -296,21 +355,21 @@ body.rtl .emg-container-cnt .plugin-card-top .column-description {
 				</div>
 			<div class="plugin-card-bottom">
 				<div class="column-updated">
-					<strong><?php _e( 'Last Updated:' ); ?></strong> <span title="<?php echo esc_attr( $plugin['last_updated'] ); ?>">
-						<?php printf( __( '%s ago' ), human_time_diff( strtotime( $plugin['last_updated'] ) ) ); ?>
+					<strong><?php esc_html_e( 'Last Updated:', 'easy-media-gallery' ); ?></strong> <span title="<?php echo esc_attr( $plugin['last_updated'] ); ?>">
+						<?php /* translators: %s: Relative time difference */ printf( esc_html__( '%s ago', 'easy-media-gallery' ), esc_html( human_time_diff( strtotime( $plugin['last_updated'] ) ) ) ); ?>
 					</span>
 				</div>
 				<div class="column-downloaded">
-					<?php echo sprintf( _n( '%s download', '%s downloads', $plugin['downloaded'] ), number_format_i18n( $plugin['downloaded'] ) ); ?>
+					<?php /* translators: %s: Number of downloads */ echo esc_html( sprintf( _n( '%s download', '%s downloads', $plugin['downloaded'], 'easy-media-gallery' ), number_format_i18n( $plugin['downloaded'] ) ) ); ?>
 				</div>
 				<div class="column-compatibility">
 					<?php
 					if ( ! empty( $plugin['tested'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $plugin['tested'] ) ), $plugin['tested'], '>' ) ) {
-						echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress' ) . '</span>';
+						echo '<span class="compatibility-untested">' . esc_html__( 'Untested with your version of WordPress', 'easy-media-gallery' ) . '</span>';
 					} elseif ( ! empty( $plugin['requires'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $plugin['requires'] ) ), $plugin['requires'], '<' ) ) {
-						echo '<span class="compatibility-incompatible">' . __( '<strong>Incompatible</strong> with your version of WordPress' ) . '</span>';
+						echo '<span class="compatibility-incompatible">' . wp_kses_post( __( '<strong>Incompatible</strong> with your version of WordPress', 'easy-media-gallery' ) ) . '</span>';
 					} else {
-						echo '<span class="compatibility-compatible">' . __( '<strong>Compatible</strong> with your version of WordPress' ) . '</span>';
+						echo '<span class="compatibility-compatible">' . wp_kses_post( __( '<strong>Compatible</strong> with your version of WordPress', 'easy-media-gallery' ) ) . '</span>';
 					}
 					?>
 				</div>

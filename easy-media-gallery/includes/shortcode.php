@@ -1,5 +1,7 @@
 <?php 
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 global $theopt;
 
 function easy_media_shortcode( $atts ) {
@@ -65,9 +67,9 @@ $cus_align = easymedia_sc_handler( $align, '1' );
 $emg_query = new WP_Query( $emgargs );
 if ( $emg_query->have_posts() ):
 
-echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">';
+echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_' . esc_attr( $cus_align ) . '">';
   for ( $i=1 ; $i <= $num_cols; $i++ ) :
-    echo '<div id="col-'.$i.'" class="thecol">';
+    echo '<div id="col-' . absint( $i ) . '" class="thecol">';
     $counter = $num_cols + 1 - $i;
 
 	while ( $emg_query->have_posts() ) : $emg_query->the_post();
@@ -149,7 +151,7 @@ echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">
 				if ( is_array( $images ) ) {
 					$ig = 0;
 
-					echo '<div id="easymedia_gallerycontainer-'.emgRandomString(6).'" style="display:none">';
+					echo '<div id="easymedia_gallerycontainer-' . esc_attr( emgRandomString( 6 ) ) . '" style="display:none">';
 					foreach( $images as $img_id ) {
 						
 							//Changelog version 1.3.10 => Set 1st Image Gallery
@@ -164,7 +166,7 @@ echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">
 						$img = wp_get_attachment_image_src($img_id, 'full');
 						$img_url = easymedia_imgresize( $img[0], $deff_img_limit, $isresize, $img[1], $img[2] );
                         $img_url = explode(",", $img_url); ?>
-                	<a class="<?php echo $thepostid; ?>-<?php echo $img_id; ?>" href="<?php echo $img_url[0]; ?>" rel="<?php echo $therell; ?>"></a>
+                	<a class="<?php echo esc_attr( $thepostid . '-' . $img_id ); ?>" href="<?php echo esc_url( $img_url[0] ); ?>" rel="<?php echo esc_attr( $therell ); ?>"></a>
             		<?php
 					$imgcount = $ig;
 				} echo '</div>'; }
@@ -211,10 +213,10 @@ echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">
 		} else {$addbadge = '';}	
 	  
 	  if ( easy_get_option( 'easymedia_disen_hovstyle' ) == '1' ) { ?>
-     <div style="width:<?php echo $imwidth; ?>px; height:<?php echo $imheight; ?>px;" class="view da-thumbs"><?php echo $addbadge; ?><div class="iehand"><img width="<?php echo $imwidth; ?>" height="<?php echo $imheight; ?>" src="<?php echo $image; ?>" alt="<?php echo $mediattl; ?>" /><a class="<?php if ( $mediatype == 'Multiple Images (Slider)' && $usegalleryinfo == 'on' ) { echo $thepostid.'-'.$frstimg; } else { echo $thepostid; } ?>" rel="<?php echo $therell; ?>" href="<?php echo $medialink; ?>"><article class="da-animate da-slideFromRight"><p <?php if ( $mediattl == '' ) { echo 'style="display:none !important;"'; } ?> class="emgfittext"><?php echo $mediattl; ?></p><div class="forspan"><span class="zoom"></span></div></article></a></div></div>
+     <div style="width:<?php echo esc_attr( $imwidth ); ?>px; height:<?php echo esc_attr( $imheight ); ?>px;" class="view da-thumbs"><?php echo wp_kses_post( $addbadge ); ?><div class="iehand"><img width="<?php echo esc_attr( $imwidth ); ?>" height="<?php echo esc_attr( $imheight ); ?>" src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $mediattl ); ?>" /><a class="<?php echo esc_attr( ( $mediatype == 'Multiple Images (Slider)' && $usegalleryinfo == 'on' ) ? $thepostid . '-' . $frstimg : $thepostid ); ?>" rel="<?php echo esc_attr( $therell ); ?>" href="<?php echo esc_url( $medialink ); ?>"><article class="da-animate da-slideFromRight"><p <?php if ( $mediattl == '' ) { echo 'style="display:none !important;"'; } ?> class="emgfittext"><?php echo esc_html( $mediattl ); ?></p><div class="forspan"><span class="zoom"></span></div></article></a></div></div>
             
 <?php } elseif ( easy_get_option( 'easymedia_disen_hovstyle' ) == '' ) { ?>
-<div class="view da-thumbs"><?php echo $addbadge; ?><div class="iehand"><a class="<?php if ( $mediatype == 'Multiple Images (Slider)' && $usegalleryinfo == 'on' ) { echo $thepostid.'-'.$frstimg; } else { echo $thepostid; } ?>" rel="<?php echo $therell; ?>" href="<?php echo $medialink; ?>"><img width="<?php echo $imwidth; ?>" height="<?php echo $imheight; ?>" src="<?php echo $image; ?>" /></a></div></div>
+<div class="view da-thumbs"><?php echo wp_kses_post( $addbadge ); ?><div class="iehand"><a class="<?php echo esc_attr( ( $mediatype == 'Multiple Images (Slider)' && $usegalleryinfo == 'on' ) ? $thepostid . '-' . $frstimg : $thepostid ); ?>" rel="<?php echo esc_attr( $therell ); ?>" href="<?php echo esc_url( $medialink ); ?>"><img width="<?php echo esc_attr( $imwidth ); ?>" height="<?php echo esc_attr( $imheight ); ?>" src="<?php echo esc_url( $image ); ?>" alt="" /></a></div></div>
 <?php	}
 
 	  endif;
@@ -223,7 +225,7 @@ echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">
 	  
 		//Changelog version 1.3.10 => Generate Image Gallery
 		if ( $mediatype == 'Multiple Images (Slider)' ) {
-			echo $galle;
+			echo wp_kses( $galle, array( 'div' => array( 'id' => array(), 'style' => array() ), 'a' => array( 'class' => array(), 'href' => array(), 'rel' => array() ) ) );
 		}
 	  
 	  
@@ -233,7 +235,7 @@ echo '<div class="pfwrpr"><div id="alignstyle" class="easymedia_'.$cus_align.'">
   endfor;
 else:
   echo '<div class="pfwrpr"><div class="alignstyle"><div class="thecol">'; ?>
-  <div class="view"><img src="<?php echo plugins_url('images/ajax-loader.gif' , __FILE__); ?>" width="32" height="32"/></div>
+  <div class="view"><img src="<?php echo esc_url( plugins_url( 'images/ajax-loader.gif', __FILE__ ) ); ?>" width="32" height="32" alt=""/></div>
   
   <?php
 endif;
@@ -244,7 +246,7 @@ echo '</div>';
 	// @since 1.3.75
 	if ( emg_get_aff_option( 'emg_affiliate_info', 'emg_aff_id', '' ) ) {
 		
-		echo '<span class="emg-aff-link">Powered by <a href="https://secure.ghozylab.com/demo/?ref='.emg_get_aff_option( 'emg_affiliate_info', 'emg_aff_id', '' ).'&goto=emg" target="_blank">Easy Media Gallery Plugin</a></span>';
+		echo '<span class="emg-aff-link">Powered by <a href="https://secure.ghozylab.com/demo/?ref=' . esc_attr( emg_get_aff_option( 'emg_affiliate_info', 'emg_aff_id', '' ) ) . '&goto=emg" target="_blank">Easy Media Gallery Plugin</a></span>';
             
            }
 
@@ -254,10 +256,8 @@ echo '</div>';
 // JS
 emg_put_script();
 
-// Dinamic CSS
-echo '<style>/*Dynamic CSS - By GhozyLab*/';
-echo emg_dynamic_css_generator();
-echo '</style>';
+// Dynamic CSS
+echo '<style>/*Dynamic CSS - By GhozyLab*/' . esc_html( wp_strip_all_tags( emg_dynamic_css_generator() ) ) . '</style>';
 	
 $content = ob_get_clean();
 return $content;
@@ -326,7 +326,7 @@ while ( $emg_query->have_posts() ) : $emg_query->the_post();
 						$emgthumbimg = easymedia_resizer( $img[0], $img[1], $img[2], $imwidth, $imheight, true );
 						
 						if ( get_post_meta( get_the_id(), 'easmedia_metabox_media_gallery_opt2', true ) == 'on' ) {
-						$thumbttl = $img_info->post_title;
+						$thumbttl = ( $img_info && ! empty( $img_info->post_title ) ) ? $img_info->post_title : get_post_meta( get_the_id(), 'easmedia_metabox_title', true );
 						$thumbttl = esc_html( esc_js( $thumbttl ) );
 						} else {
 						$thumbttl = get_post_meta( get_the_id(), 'easmedia_metabox_title', true );
@@ -345,7 +345,7 @@ while ( $emg_query->have_posts() ) : $emg_query->the_post();
 endwhile;
 else:
 echo '<div class="easymedia_center">'; 
-echo '<div class="view"><img src="'.plugins_url('images/ajax-loader.gif' , __FILE__).'" width="32" height="32"/></div>';	
+echo '<div class="view"><img src="' . esc_url( plugins_url( 'images/ajax-loader.gif', __FILE__ ) ) . '" width="32" height="32" alt=""/></div>';	
 $contnt = ob_get_clean();
 return $contnt;  
 
@@ -356,7 +356,7 @@ echo '</div></div>';
 	// @since 1.3.75
 	if ( emg_get_aff_option( 'emg_affiliate_info', 'emg_aff_id', '' ) ) {
 		
-		echo '<span class="emg-aff-link">Powered by <a href="https://secure.ghozylab.com/demo/?ref='.emg_get_aff_option( 'emg_affiliate_info', 'emg_aff_id', '' ).'&goto=emg" target="_blank">Easy Media Gallery Plugin</a></span>';
+		echo '<span class="emg-aff-link">Powered by <a href="https://secure.ghozylab.com/demo/?ref=' . esc_attr( emg_get_aff_option( 'emg_affiliate_info', 'emg_aff_id', '' ) ) . '&goto=emg" target="_blank">Easy Media Gallery Plugin</a></span>';
             
            }
 echo '</div>';
@@ -365,10 +365,8 @@ echo '</div>';
 // JS
 emg_put_script();
 
-// Dinamic CSS
-echo '<style>/*Dynamic CSS - By GhozyLab*/';
-echo emg_dynamic_css_generator();
-echo '</style>';
+// Dynamic CSS
+echo '<style>/*Dynamic CSS - By GhozyLab*/' . esc_html( wp_strip_all_tags( emg_dynamic_css_generator() ) ) . '</style>';
 
 $content = ob_get_clean();
 return $content;

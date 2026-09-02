@@ -17,6 +17,8 @@ function emg_editor_add_init()
 
             wp_enqueue_style( 'thickbox' );
             wp_enqueue_script( 'thickbox' );
+            wp_enqueue_script( 'jquery-ui-core' );
+            wp_enqueue_script( 'jquery-ui-widget' );
 
             wp_enqueue_style( 'easymedia-tinymce' );
             wp_enqueue_style( 'jquery-multiselect-css' );
@@ -25,7 +27,7 @@ function emg_editor_add_init()
             wp_enqueue_style( 'emg-tabs-style' );
             wp_enqueue_script( 'emg-tabs' );
             wp_enqueue_script( 'jquery-multi-sel' );
-            wp_enqueue_script( 'easymedia-cpscript', plugins_url( 'functions/tinymce-dlg.js', __FILE__ ) );
+            wp_enqueue_script( 'easymedia-tinymce-script', plugins_url( 'functions/tinymce-dlg.js', __FILE__ ), array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget', 'thickbox', 'jquery-multi-sel', 'emg-tabs' ), defined( 'EASYMEDIA_VERSION' ) ? EASYMEDIA_VERSION . '.7' : time() );
             wp_enqueue_script( 'jquery-i-button', plugins_url( 'js/jquery/jquery.ibutton.js', __FILE__ ) );
             wp_enqueue_style( 'metabox-ibuttoneditor', plugins_url( 'css/ibutton.css', __FILE__ ), false, EASYMEDIA_VERSION );
 
@@ -36,7 +38,7 @@ function emg_editor_add_init()
                 'sc_version' => EASYMEDIA_VERSION,
             );
 
-            wp_localize_script( 'easymedia-cpscript', 'emg_tinymce_vars', $tinymcedata );
+            wp_localize_script( 'easymedia-tinymce-script', 'emg_tinymce_vars', $tinymcedata );
 
         }
 
@@ -47,8 +49,8 @@ function emg_editor_add_init()
 function add_emg_shortcode_button()
 {
 
-    $img = plugins_url( 'images/emg-scmanager-icon.png', __FILE__ );
-    printf( '<a class="thickbox button" id="emg_gut_shorcode-button" title="Easy Media Shortcode" style="outline: medium none !important; cursor: pointer;" ><img src="'.$img.'" alt="Easy Media Gallery" width="20" height="20" style="position:relative; top:-2px"/>Easy Media Gallery</a>'.''.'</a>', '#' );
+    $img = esc_url( plugins_url( 'images/emg-scmanager-icon.png', __FILE__ ) );
+    printf( '<a class="button emg-media-button" id="emg_gut_shorcode-button" href="#TB_inline?inlineId=emgmodal" title="%1$s" style="outline: medium none !important; cursor: pointer;"><img src="%2$s" alt="%3$s" width="20" height="20" style="position:relative; top:-2px"/>%3$s</a>', esc_attr__( 'Easy Media Shortcode', 'easy-media-gallery' ), esc_url( $img ), esc_html__( 'Easy Media Gallery', 'easy-media-gallery' ) );
 
 }
 
@@ -124,7 +126,7 @@ function emg_popup_content()
             $myposts = get_posts( $args );
 
             foreach ( $myposts as $post ): setup_postdata( $post );?>
-				                        <option id="<?php echo $post->ID; ?>" type="text" value="<?php echo $post->ID; ?>" />
+				                        <option id="<?php echo absint( $post->ID ); ?>" value="<?php echo absint( $post->ID ); ?>">
 				                        <?php echo esc_html( esc_js( the_title( null, null, false ) ) ); ?></option>
 				                        <?php endforeach;
 
@@ -186,9 +188,9 @@ function emg_popup_content()
                         ?>
 
                     <div class="sc_input sc_text">
-                        <label for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label> <br />
-                        <input name="<?php echo $value['id']; ?>" id="<?php echo $value['id']; ?>" type="text"
-                            value="<?php $value['std'];?>" />
+                        <label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['name'] ); ?></label> <br />
+                        <input name="<?php echo esc_attr( $value['id'] ); ?>" id="<?php echo esc_attr( $value['id'] ); ?>" type="text"
+                            value="<?php echo isset( $value['std'] ) ? esc_attr( $value['std'] ) : ''; ?>" />
                         <div class="clearfix"></div>
                     </div>
                     <?php break;
@@ -196,16 +198,16 @@ function emg_popup_content()
                     case 'select':
                         ?>
 
-                    <div class="sc_input sc_select" id="<?php echo $value['id']; ?>_div">
+                    <div class="sc_input sc_select" id="<?php echo esc_attr( $value['id'] ); ?>_div">
                         <label class="label_optionttl"
-                            for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
-                        <select class="tinymce_select" name="<?php echo $value['id']; ?>"
-                            id="<?php echo $value['id']; ?>">
-                            <option value="0">Select</option>
+                            for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['name'] ); ?></label>
+                        <select class="tinymce_select" name="<?php echo esc_attr( $value['id'] ); ?>"
+                            id="<?php echo esc_attr( $value['id'] ); ?>">
+                            <option value="0"><?php esc_html_e( 'Select', 'easy-media-gallery' ); ?></option>
                             <?php
 
                         foreach ( $value['options'] as $state ) {?>
-                            <option id="<?php echo $state; ?>" value="<?php echo $state; ?>"><?php echo $state; ?>
+                            <option id="<?php echo esc_attr( $state ); ?>" value="<?php echo esc_attr( $state ); ?>"><?php echo esc_html( $state ); ?>
                             </option>
                             <?php }
 
@@ -220,19 +222,21 @@ break;
                     case 'selectcat':
                         ?>
 
-                    <div class="sc_input sc_select" id="<?php echo $value['id']; ?>_div">
+                    <div class="sc_input sc_select" id="<?php echo esc_attr( $value['id'] ); ?>_div">
                         <label class="label_optionttl"
-                            for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
-                        <?php $states = get_terms( 'emediagallery', array( 'hide_empty' => true ) );?>
-                        <select class="tinymce_select" name="<?php echo $value['id']; ?>"
-                            id="<?php echo $value['id']; ?>">
-                            <option value="0">Select</option>
+                            for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['name'] ); ?></label>
+                        <?php $states = get_terms( array( 'taxonomy' => 'emediagallery', 'hide_empty' => true ) );?>
+                        <select class="tinymce_select" name="<?php echo esc_attr( $value['id'] ); ?>"
+                            id="<?php echo esc_attr( $value['id'] ); ?>">
+                            <option value="0"><?php esc_html_e( 'Select', 'easy-media-gallery' ); ?></option>
                             <?php
 
-                        foreach ( $states as $state ) {?>
-                            <option id="<?php echo $state->term_id; ?>" value="<?php echo $state->term_id; ?>">
-                                <?php echo $state->name; ?></option>
+                        if ( ! is_wp_error( $states ) && ! empty( $states ) ) {
+                            foreach ( $states as $state ) {?>
+                            <option id="<?php echo esc_attr( $state->term_id ); ?>" value="<?php echo esc_attr( $state->term_id ); ?>">
+                                <?php echo esc_html( $state->name ); ?></option>
                             <?php }
+                        }
 
                         ?>
                         </select>
@@ -245,11 +249,11 @@ break;
                     case 'selectmedia':
                         ?>
 
-                    <div class="sc_input sc_select" id="<?php echo $value['id']; ?>_div">
+                    <div class="sc_input sc_select" id="<?php echo esc_attr( $value['id'] ); ?>_div">
                         <label class="label_optionttl"
-                            for="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></label>
-                        <select class="tinymce_select" name="<?php echo $value['id']; ?>"
-                            id="<?php echo $value['id']; ?>">
+                            for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['name'] ); ?></label>
+                        <select class="tinymce_select" name="<?php echo esc_attr( $value['id'] ); ?>"
+                            id="<?php echo esc_attr( $value['id'] ); ?>">
                             <?php
 
                         global $post;
@@ -260,15 +264,10 @@ break;
                             'posts_per_page' => -1,
                         );
 
-                        /*
-                        Thanks to Kevin Falcoz (aka 0pc0deFR) for this discovery and this patch.
-                        ::: esc_html(esc_js(the_title(NULL, NULL, FALSE))); :::
-                         */
-
                         $myposts = get_posts( $args );
 
                         foreach ( $myposts as $post ): setup_postdata( $post );?>
-				                            <option id="<?php echo $post->ID; ?>" type="text" value="<?php echo $post->ID; ?>" />
+				                            <option id="<?php echo absint( $post->ID ); ?>" value="<?php echo absint( $post->ID ); ?>">
 				                            <?php echo esc_html( esc_js( the_title( null, null, false ) ) ); ?></option>
 				                            <?php endforeach;
                         ?>
@@ -329,7 +328,7 @@ break;
                     <div class="sc_input sc_select" id="upd_topro">
                         <p class="emg_blink" style="color:#F00;">UPGRADE to PRO Version and get Advanced Shortcode, <a
                                 target="_blank"
-                                href="<?php echo plugins_url( 'includes/images/pro-version-shortcode-manager.png', dirname( __FILE__ ) ) ?>"
+                                href="<?php echo esc_url( plugins_url( 'includes/images/pro-version-shortcode-manager.png', dirname( __FILE__ ) ) ); ?>"
                                 style="text-decoration:underline !important;">Click for Screenshot</a></p>
                         <div class="clearfix"></div>
                     </div> <?php }
